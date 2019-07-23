@@ -39,14 +39,17 @@ plugin "docker" {
     command = "docker"
     args = ["build", "-t", "{{docker.repo}}", "{{version.prod}}", "."]
     settings {
-        version = "{{ versions.prod }}"
-        passed = "{{ status.build_pass }}"
+        level = "{{publish.level}}"
     }
 }
 
 var "versions" {
     prod = "v1.0.0"
     stage = "v1.0.3"
+}
+
+var "publish" {
+    level = "prodution"
 }
 
 var "docker" {
