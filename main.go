@@ -41,7 +41,7 @@ func main() {
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"build": cmdFactor,
-		"bar":   cmdFactor,
+		"init":  cmdFactor,
 	}
 
 	exitStatus, err := c.Run()
@@ -141,7 +141,6 @@ func Render(src string, data pongo2.Context) (out string, err error) {
 }
 
 func VarToTplContext(vars map[string]Var) pongo2.Context {
-	// log.Debug(vars)
 	c := pongo2.Context{}
 	for k, v := range vars {
 		c[k] = v
