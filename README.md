@@ -63,4 +63,4 @@ var "status" {
 
 目前只支持go环境安装，后面我会发布更多的预编译版本到各个平台
 
-`go install github.com/deoops/dotam`
+`go install github.com/deoops-net/dotam`
