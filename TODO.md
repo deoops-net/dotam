@@ -10,8 +10,7 @@
 * cli基本命令支持`build, init`
 * plugin完整支持
 
-----
-todos:
+**todos:**
 
 - [ ] !! Temp插件
 - [ ] !! init命令
@@ -19,3 +18,6 @@ todos:
 - [ ] ! git 插件
 - [ ] ! docker 插件
 
+----
+
+## V 2.0.0
