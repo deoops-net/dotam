@@ -27,7 +27,7 @@ PS: 如果你懒得每次从别的项目拷贝一个配置文件过来那么你�
 
 ```hcl
 temp "Makefile" {
-    src = "conf"
+    src = "examples/.dotam/Makefile"
     dest = "./"
     var {
         version = "{{versions.prod}}"
