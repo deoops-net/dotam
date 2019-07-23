@@ -24,12 +24,12 @@ func init() {
 func initLogLevel() {
 	level := os.Getenv("LOG_LEVEL")
 
-	if level != "production" {
-		fmt.Println("log at debug level")
-		log.SetLevel(log.DebugLevel)
+	if level != "debug" {
+		// fmt.Println("log at error level")
+		log.SetLevel(log.InfoLevel)
 	} else {
-		fmt.Println("log at error level")
-		log.SetLevel(log.ErrorLevel)
+		// fmt.Println("log at debug level")
+		log.SetLevel(log.DebugLevel)
 	}
 
 	log.SetFormatter(&log.TextFormatter{})
@@ -97,7 +97,12 @@ func (r RunCmd) Run(args []string) int {
 	}
 
 	// log.Debug(newConfig.Temp)
-	RunTasks(newConfig)
+	if err = RunTasks(newConfig); err != nil {
+		log.Error(err)
+		return -1
+	}
+
+	log.Info("Congratulations! All works done!")
 
 	return 0
 }
@@ -149,7 +154,50 @@ func VarToTplContext(vars map[string]Var) pongo2.Context {
 	return c
 }
 
+func TempVarToTplContext(vars map[string]interface{}) pongo2.Context {
+	c := pongo2.Context{}
+	for k, v := range vars {
+		c[k] = v
+	}
+
+	return c
+}
+
 func RunTasks(conf DotamConf) error {
-	log.Debug(conf)
+	return ProcessTemp(conf.Temp)
+}
+
+func ProcessTemp(temps map[string]Temp) error {
+	if temps == nil {
+		return nil
+	}
+
+	for k, v := range temps {
+		var destFile string
+		srcFile := Abs(v.Src)
+		if v.Dest == "." || v.Dest == "./" {
+			destFile = Abs(k)
+		}
+		log.Debug("source file is :", srcFile)
+		log.Debug("destFile file is :", destFile)
+		// log.Debug(k, v.Src)
+		log.Debugf("%s var is: %v", k, v.Var)
+		tempVars := TempVarToTplContext(v.Var)
+		log.Debug(tempVars)
+		tpl := ReadFile(Abs(v.Src))
+		destData, err := Render(string(tpl), tempVars)
+		if err != nil {
+			return err
+		}
+
+		log.Debug("new rendered data:")
+		log.Debug(destData)
+
+		if err = WriteFile(destData, destFile); err != nil {
+			return err
+		}
+
+	}
+
 	return nil
 }

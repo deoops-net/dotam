@@ -17,6 +17,7 @@
 - [ ] ! 自举
 - [ ] ! git 插件
 - [ ] ! docker 插件
+- [ ] ! refactor code
 
 ----
 

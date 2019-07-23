@@ -1,6 +1,6 @@
 temp "Makefile" {
-    src = "conf"
-    dest = ""
+    src = "example/.dotam/Makefile"
+    dest = "./"
     var {
         version = "{{ versions.prod }}"
         tag = "0.1.2"
@@ -8,8 +8,11 @@ temp "Makefile" {
 }
 
 temp "Dockerfile" {
-    src = "conf"
-    dest = ""
+    src = "example/.dotam/Dockerfile"
+    dest = "."
+    var {
+        version = "{{ versions.stage }}"
+    }
 }
 
 plugin "docker" {

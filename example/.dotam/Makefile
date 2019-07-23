@@ -1,4 +1,4 @@
-VERSION=v1.0.0
+VERSION={{ version }}
 
 .PHONY: install
 install:
