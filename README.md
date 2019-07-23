@@ -28,21 +28,16 @@ PS: 如果你懒得每次从别的项目拷贝一个配置文件过来那么你�
 ```hcl
 temp "Makefile" {
     src = "conf"
-    dest = ""
+    dest = "./"
     var {
         version = "{{ versions.prod }}"
         tag = "0.1.2"
     }
 }
 
-temp "Dockerfile" {
-    src = "conf"
-    dest = ""
-}
-
 plugin "docker" {
-    command = ""
-    args = ["", "", ""]
+    command = "docker"
+    args = ["build", "-t", "{{docker.repo}}", "{{version.prod}}", "."]
     settings {
         version = "{{ versions.prod }}"
         passed = "{{ status.build_pass }}"
@@ -54,9 +49,10 @@ var "versions" {
     stage = "v1.0.3"
 }
 
-var "status" {
-    build_pass = true
+var "docker" {
+    repo = "deoops/dotam"
 }
+
 ```
 
 ## 安装
