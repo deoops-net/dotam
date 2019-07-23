@@ -25,6 +25,8 @@ PS: 构建效率目前还不是主要开发方向，在版本稳定后我会花�
 通常你只需要在项目根目录下配置一个像下面的这样的示例配置文件，然后运行`dotam build`,所有的工作就完成了！
 PS: 如果你懒得每次从别的项目拷贝一个配置文件过来那么你可以通过`dotam init`来初始一个模板文件。
 
+Dotamfile.hcl:
+
 ```hcl
 temp "Makefile" {
     src = "examples/.dotam/Makefile"
@@ -37,7 +39,7 @@ temp "Makefile" {
 
 plugin "docker" {
     command = "docker"
-    args = ["build", "-t", "{{docker.repo}}", "{{version.prod}}", "."]
+    args = ["build", "-t", "{{docker.repo}}", "{{versions.prod}}", "."]
     settings {
         level = "{{publish.level}}"
     }
@@ -57,6 +59,51 @@ var "docker" {
 }
 
 ```
+
+Dotamfile.yml
+```yml
+temp:
+  Makefile:
+    src: "examples/.dotam/Makefile"
+    dest: "./"
+    var:
+    - version: "{{versions.prod}}"
+    - tag: "0.1.2"
+
+plugin:
+  docker:
+    command: "docker"
+    args: 
+    - build
+    - -t
+    - "{{docker.repo}}"
+    - "{{versions.prod}}"
+    - "."
+    settings:
+    - level: "{{publish.level}}"
+
+var:
+  versions:
+  - prod: "v1.0.0"
+  - stage: "v1.0.3"
+  publish:
+  - level: "production"
+  docker:
+  - repo: "deoops/dotam"
+
+```
+
+Dotamfile.json
+```json
+{
+    "temp": {
+        "Makefile": {}
+    }
+    ...
+}
+
+```
+
 
 ## 安装
 
