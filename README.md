@@ -30,7 +30,7 @@ temp "Makefile" {
     src = "conf"
     dest = "./"
     var {
-        version = "{{ versions.prod }}"
+        version = "{{versions.prod}}"
         tag = "0.1.2"
     }
 }
