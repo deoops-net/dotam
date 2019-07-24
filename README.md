@@ -112,6 +112,22 @@ Dotamfile.json
 `go install github.com/deoops-net/dotam`
 
 
+## 使用
+
+### 运行
+
+`dotam build [Dotamfile.{yml,hcl,json}]`
+
+默认情况下直接使用dotam build即可，dotam会在根目录下寻找Dotamfile的三种格式文件(.json, .hcl, .yml|.yaml)之一。你也可以指定一个具体的
+文件让dotam 去跑
+
+### 初始化
+
+`dotam init [-t yml,json,hcl]`
+
+此命令会为项目创建一个模板配置文件，可以通过`-t`指定创建的文件类型。
+
+
 ## 注意及常见问题
 
 ### 语法冲突
