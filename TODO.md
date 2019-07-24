@@ -15,7 +15,7 @@
 - [x] !! Temp插件
 - [ ] !! 多配置语言支持
     - [x] json
-    - [ ] yaml
+    - [x] yaml
     - [x] hcl
 - [ ] !! init命令
 - [ ] ! 自举

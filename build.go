@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/hcl"
 	"github.com/mitchellh/cli"
 	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 )
 
 func BuildCMDFactor() (cli.Command, error) {
@@ -55,22 +56,29 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	if err = parseConf(&config, string(data), dotamFile); err != nil {
 		return
 	}
+	log.Debug(config)
 
 	if config.Var != nil {
 		renderData = VarToTplContext(config.Var)
 	}
+	log.Debug("ooo")
+	log.Debug(renderData)
+	log.Debug("******")
 
 	newDotamSrc, err := Render(string(data), renderData)
 	if err != nil {
-		log.Error(err)
+		// log.Error(err)
 		return -1
 	}
+	log.Debug("!!!!")
 	log.Debug(newDotamSrc)
 
 	newConfig := DotamConf{}
-	if err = hcl.Decode(&newConfig, newDotamSrc); err != nil {
+	if err = parseConf(&newConfig, newDotamSrc, dotamFile); err != nil {
 		return
 	}
+	log.Debug("00000")
+	log.Debug(newConfig)
 
 	if err = RunTasks(newConfig); err != nil {
 		log.Error(err)
@@ -110,5 +118,9 @@ func parseConf(conf *DotamConf, data, dotamFile string) error {
 		return json.Unmarshal([]byte(data), conf)
 	}
 
-	return nil
+	if ext == ".yml" || ext == ".yaml" {
+		return yaml.Unmarshal([]byte(data), conf)
+	}
+
+	return errors.New("not support file type")
 }

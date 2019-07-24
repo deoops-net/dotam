@@ -8,4 +8,5 @@ require (
 	github.com/labstack/gommon v0.2.9 // indirect
 	github.com/mitchellh/cli v1.0.0
 	github.com/sirupsen/logrus v1.4.2
+	gopkg.in/yaml.v2 v2.2.2
 )
