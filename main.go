@@ -30,8 +30,9 @@ func initLogLevel() {
 }
 
 func main() {
-	c := cli.NewCLI("dopam", "1.0.0")
+	c := cli.NewCLI("dotam", "1.0.0-beta")
 	c.Args = os.Args[1:]
+
 	c.Commands = map[string]cli.CommandFactory{
 		"build": BuildCMDFactor,
 		"init":  InitCMDFactor,
@@ -39,7 +40,7 @@ func main() {
 
 	exitStatus, err := c.Run()
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	os.Exit(exitStatus)

@@ -1,6 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
+	"path/filepath"
+
 	"github.com/flosch/pongo2"
 	"github.com/hashicorp/hcl"
 	"github.com/mitchellh/cli"
@@ -18,21 +22,38 @@ func (r RunCmd) Help() string {
 	return "this is help message"
 }
 
-func (r RunCmd) Run(args []string) int {
+// load file
+// pre-render
+// run tasks
+func (r RunCmd) Run(args []string) (extCode int) {
+	var err error
 	var dotamFile string
 	var renderData pongo2.Context
 
+	defer func() {
+		if err != nil {
+			log.Error(err)
+			extCode = -1
+			return
+		}
+	}()
+
+	// read config
+	defaultConf, exist := hasDefaultConf()
 	if len(args) == 0 {
-		dotamFile = Abs("Dotamfile.hcl")
+		if !exist {
+			err = errors.New("you need at least a conf file, pls see help doc")
+			return
+		}
+		dotamFile = Abs(defaultConf)
 	} else {
 		dotamFile = Abs(args[0])
 	}
 
 	data := ReadFile(dotamFile)
 	config := DotamConf{}
-	err := hcl.Decode(&config, string(data))
-	if err != nil {
-		log.Error(err)
+	if err = parseConf(&config, string(data), dotamFile); err != nil {
+		return
 	}
 
 	if config.Var != nil {
@@ -47,22 +68,47 @@ func (r RunCmd) Run(args []string) int {
 	log.Debug(newDotamSrc)
 
 	newConfig := DotamConf{}
-	err = hcl.Decode(&newConfig, newDotamSrc)
-	if err != nil {
-		panic(err)
+	if err = hcl.Decode(&newConfig, newDotamSrc); err != nil {
+		return
 	}
 
-	// log.Debug(newConfig.Temp)
 	if err = RunTasks(newConfig); err != nil {
 		log.Error(err)
-		return -1
+		return
 	}
 
 	log.Info("Congratulations! All works done!")
-
-	return 0
+	return
 }
 
 func (r RunCmd) Synopsis() string {
 	return "run pipline tasks, default config file is Dotamfile.{json,yml,hcl}"
+}
+
+func hasDefaultConf() (f string, e bool) {
+	for _, v := range DEFAULT_DOTAMFILES {
+		if Exist(v) {
+			f = v
+			e = true
+			return
+		}
+	}
+
+	return
+}
+
+func parseConf(conf *DotamConf, data, dotamFile string) error {
+	// data := ReadFile(dotamFile)
+	ext := filepath.Ext(dotamFile)
+	log.Debug("parsing conf file ext is: ", ext)
+
+	if ext == ".hcl" {
+		return hcl.Decode(conf, string(data))
+	}
+
+	if ext == ".json" {
+		return json.Unmarshal([]byte(data), conf)
+	}
+
+	return nil
 }

@@ -1,0 +1,16 @@
+{
+    "temp": {
+        "Tempfile": {
+            "src": "example/.dotam/Tempfile",
+            "dest": ".",
+            "var": {
+                "data": "{{data.temp|safe}}"
+            }
+        }
+    },
+    "var": {
+        "data": {
+            "temp": "abcd"
+        }
+    }
+}

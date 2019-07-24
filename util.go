@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/flosch/pongo2"
 	log "github.com/sirupsen/logrus"
@@ -97,4 +98,13 @@ func ProcessTemp(temps map[string]Temp) error {
 	}
 
 	return nil
+}
+
+func Exist(path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
+
 }
