@@ -110,3 +110,35 @@ Dotamfile.json
 目前只支持go环境安装，后面我会发布更多的预编译版本到各个平台
 
 `go install github.com/deoops-net/dotam`
+
+
+## 注意及常见问题
+
+### 语法冲突
+
+如果模板中还有一些用于其他工具的模板标记比如我们的`.drone.yml`中用于slack插件的`{{#success}}`语法，这个会和项目自带的
+pongo2模板语法有冲突，你可以直接在模板中用`safe`过滤器来处理:
+
+```yml
+  - name: notify
+    image: plugins/slack
+    settings:
+      webhook: https://hooks.slack.com/services/TKR84LDNK/BL0A07VEG/xasdaww
+      channel: deoops
+      link_names: true
+      icon_url: https://unsplash.it/256/256/?random
+      image_url: http://auto.wegeek.fun/api/badges/techmesh/dkb-api/status.svg
+      template: >
+        {{"{{#success build.status}}"|safe}}
+        {{"**API** build {{build.number}} succeeded. <@dayuoba> ready to be deployed. <@Vincent> [Doc]login update "|safe}}
+        {{"{{else}}"|safe}}
+        {{" **API** build {{build.number}} failed. Fix {{build.link}} please <@dayuoba>. "|safe}}
+        {{"{{/success}} "|safe}}
+
+```
+
+
+
+
+
+
