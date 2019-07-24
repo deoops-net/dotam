@@ -107,9 +107,27 @@ Dotamfile.json
 
 ## 安装
 
-目前只支持go环境安装，后面我会发布更多的预编译版本到各个平台
+**homebrew**:
+
+```bash
+brew tap deoops-net/tap
+
+brew install dotam
+```
+
+**预编译二进制**:
+
+到[发布](https://github.com/deoops-net/dotam/releases)页面下载对应平台的预编译版本。
+
+
+**通过go安装**:
 
 `go install github.com/deoops-net/dotam`
+
+**Docker**:
+
+comming soon!
+
 
 
 ## 使用
