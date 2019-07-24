@@ -128,6 +128,15 @@ brew install dotam
 
 comming soon!
 
+**开发及源码安装**
+
+```bash
+git clone https://github.com/deoops-net/dotam
+cd dotam
+make test
+make install
+```
+
 
 
 ## 使用
