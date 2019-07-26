@@ -5,3 +5,14 @@
 foo
 {% endcomment%}
 abc
+
+{% verbatim %}
+{{#success build.status}} 
+asjd
+{% endverbatim %}
+
+{% verbatim %}
+<style>@media{#foobar...
+{{ test }}
+{% test %}
+{% endverbatim %}

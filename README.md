@@ -9,6 +9,11 @@ Dotam 读法 dot-am, 原意为dotfiles automation。
     - [特性](#特性)
     - [快览](#快览)
     - [安装](#安装)
+        - [**homebrew**](#homebrew)
+        - [**预编译二进制**](#预编译二进制)
+        - [**通过go安装**](#通过go安装)
+        - [**Docker**](#docker)
+        - [**开发及源码安装**](#开发及源码安装)
     - [使用](#使用)
         - [运行](#运行)
         - [初始化](#初始化)
@@ -76,6 +81,7 @@ var "docker" {
 ```
 
 Dotamfile.yml
+
 ```yml
 temp:
   Makefile:
@@ -109,6 +115,7 @@ var:
 ```
 
 Dotamfile.json
+
 ```json
 {
     "temp": {
@@ -119,10 +126,9 @@ Dotamfile.json
 
 ```
 
-
 ## 安装
 
-**homebrew**:
+### **homebrew**
 
 ```bash
 brew tap deoops-net/tap
@@ -130,20 +136,19 @@ brew tap deoops-net/tap
 brew install dotam
 ```
 
-**预编译二进制**:
+### **预编译二进制**
 
 到[发布](https://github.com/deoops-net/dotam/releases)页面下载对应平台的预编译版本。
 
-
-**通过go安装**:
+### **通过go安装**
 
 `go install github.com/deoops-net/dotam`
 
-**Docker**:
+### **Docker**
 
 comming soon!
 
-**开发及源码安装**
+### **开发及源码安装**
 
 ```bash
 git clone https://github.com/deoops-net/dotam
@@ -151,8 +156,6 @@ cd dotam
 make test
 make install
 ```
-
-
 
 ## 使用
 
@@ -168,7 +171,6 @@ make install
 `dotam init [-t yml,json,hcl]`
 
 此命令会为项目创建一个模板配置文件，可以通过`-t`指定创建的文件类型。
-
 
 ## 注意及常见问题
 
@@ -192,8 +194,11 @@ pongo2模板语法有冲突，你可以直接在模板中用`safe`过滤器来�
         {{"{{else}}"|safe}}
         {{" **API** build {{build.number}} failed. Fix {{build.link}} please <@dayuoba>. "|safe}}
         {{"{{/success}} "|safe}}
-
 ```
+
+EDIT:
+通过 [issues](https://github.com/flosch/pongo2/issues/218) 了解到这个才是更好的办法
+
 
 
 
