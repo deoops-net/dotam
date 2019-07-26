@@ -2,9 +2,7 @@ temp "Tempfile" {
     src = "example/.dotam/Tempfile"
     dest = "."
     var {
-        data = <<TEMP
-{{data.temp|safe}}
-        TEMP
+        data = "{{data.temp|safe}}"
     }
 }
 
@@ -16,15 +14,19 @@ git "dev" {
 docker {
     repo = "deoops/dotam"
     tag = "{{versions.prod}}"
-    username = "$reg_passwd"
-    passpord = "$reg_passwd"
+    
+    auth {
+        username = "tom"
+        password = "pass"
+    }
 }
 
 var "data" {
-    temp = <<TEMP
-abc
-bcd
-        TEMP
+    temp = "foo"
+}
+
+var "versions" {
+    prod = "v0.1.1"
 }
 
 arg "reg_user" {

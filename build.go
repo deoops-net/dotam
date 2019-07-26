@@ -59,10 +59,12 @@ func (r RunCmd) Run(args []string) (extCode int) {
 				dotamFile = defaultConf
 			}
 		}
+		// TODO store this build args
 		log.WithFields(log.Fields{"BUILD": "PARSED ARGS"}).Debug(buildArgs)
 
 	}
 
+	// read src conf
 	data := ReadFile(dotamFile)
 	config := DotamConf{}
 	if err = parseConf(&config, string(data), dotamFile); err != nil {
@@ -75,9 +77,9 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	}
 	log.Debug(renderData)
 
+	// render middle conf
 	newDotamSrc, err := Render(string(data), renderData)
 	if err != nil {
-		// log.Error(err)
 		return -1
 	}
 

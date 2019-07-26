@@ -26,8 +26,12 @@
 - [ ] ! 自举
 - [ ] ! git 插件
 - [ ] ! docker 插件
+    - [x] !! build
+    - [x] !! push
+    - [ ] pass auth from command line
 - [ ] ! refactor code
 - [ ] !! build args
+    - [x] ! 参数及conf文件自动解析
 
 ----
 

@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"testing"
+
+	docker "github.com/fsouza/go-dockerclient"
 
 	"github.com/hashicorp/hcl"
 	"gopkg.in/yaml.v2"
@@ -73,4 +76,29 @@ func TestParseArgs(t *testing.T) {
 		t.Log(f2)
 		t.Fail()
 	}
+}
+
+func TestBuildDockerImage(t *testing.T) {
+
+	c, err := docker.NewClientFromEnv()
+	if err != nil {
+		// log.Error("current env doesn't support docker, pls check your docker installation")
+		panic(err)
+	}
+	// var buf bytes.Buffer
+	// dockerfile, err := filepath.Abs("Dockerfile")
+	if err = c.BuildImage(docker.BuildImageOptions{
+		Name:                "dotam",
+		ContextDir:          ".",
+		Dockerfile:          "Dockerfile",
+		RmTmpContainer:      true,
+		ForceRmTmpContainer: true,
+		// Remote:       "https://reg.yunpro.cn",
+		SuppressOutput: false,
+		// InputStream:    &buf,
+		OutputStream: os.Stdout,
+	}); err != nil {
+		panic(err)
+	}
+	// log.Debug(DockerClient)
 }

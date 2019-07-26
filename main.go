@@ -30,6 +30,10 @@ func initLogLevel() {
 }
 
 func main() {
+	initCli()
+}
+
+func initCli() {
 	c := cli.NewCLI("dotam", "1.0.0-beta")
 	c.Args = os.Args[1:]
 

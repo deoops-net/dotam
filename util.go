@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/flosch/pongo2"
+	docker "github.com/fsouza/go-dockerclient"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -62,8 +63,16 @@ func TempVarToTplContext(vars map[string]interface{}) pongo2.Context {
 	return c
 }
 
-func RunTasks(conf DotamConf) error {
-	return ProcessTemp(conf.Temp)
+func RunTasks(conf DotamConf) (err error) {
+	if err = ProcessTemp(conf.Temp); err != nil {
+		return
+	}
+
+	if err = ProcessDocker(conf.Docker); err != nil {
+		return
+	}
+
+	return
 }
 
 func ProcessTemp(temps map[string]Temp) error {
@@ -73,32 +82,52 @@ func ProcessTemp(temps map[string]Temp) error {
 
 	for k, v := range temps {
 		var destFile string
-		srcFile := Abs(v.Src)
+		// srcFile := Abs(v.Src)
 		if v.Dest == "." || v.Dest == "./" {
 			destFile = Abs(k)
 		}
-		log.Debug("source file is :", srcFile)
-		log.Debug("destFile file is :", destFile)
-		// log.Debug(k, v.Src)
-		log.Debugf("%s var is: %v", k, v.Var)
 		tempVars := TempVarToTplContext(v.Var)
-		log.Debug(tempVars)
+		log.WithFields(log.Fields{"PROCESS": "TEMP VARS"}).Debug(tempVars)
 		tpl := ReadFile(Abs(v.Src))
 		destData, err := Render(string(tpl), tempVars)
 		if err != nil {
 			return err
 		}
 
-		log.Debug("new rendered data:")
-		log.Debug(destData)
+		log.WithFields(log.Fields{"PROCESS": "TEMP DEST"}).Debug(destData)
 
 		if err = WriteFile(destData, destFile); err != nil {
 			return err
 		}
-
 	}
 
 	return nil
+}
+
+func ProcessDocker(d Docker) (err error) {
+	if d == (Docker{}) {
+		return
+	}
+
+	c, err := docker.NewClientFromEnv()
+	if err != nil {
+		log.Error("current env doesn't support docker, pls check your docker installation")
+		panic(err)
+	}
+
+	if err = BuildImage(d, c); err != nil {
+		return
+	}
+
+	if d.Auth == (Auth{}) {
+		return
+	}
+
+	if err = PushImage(d, c); err != nil {
+		return
+	}
+
+	return
 }
 
 func Exist(path string) bool {
@@ -107,7 +136,6 @@ func Exist(path string) bool {
 	} else {
 		return true
 	}
-
 }
 
 func ParseBuildArgs(src []string) (dotamFile string, dest []string) {
@@ -121,5 +149,44 @@ func ParseBuildArgs(src []string) (dotamFile string, dest []string) {
 		str = strings.TrimSpace(str)
 	}
 	dest = strings.Split(str, " ")
+	return
+}
+
+func BuildImage(d Docker, c *docker.Client) (err error) {
+
+	log.WithFields(log.Fields{"PROCESS": "DOCKER REPO"}).Debug(d.Repo)
+	log.WithFields(log.Fields{"PROCESS": "DOCKER TAG"}).Debug(d.Tag)
+	log.WithFields(log.Fields{"PROCESS": "DOCKER AUTH"}).Debug(d.Auth)
+
+	imageName := d.Repo + ":" + d.Tag
+	log.Debug(imageName)
+	// TODO parse Dockerfile from conf
+	if err = c.BuildImage(docker.BuildImageOptions{
+		Name:                imageName,
+		ContextDir:          ".",
+		Dockerfile:          "Dockerfile",
+		SuppressOutput:      false,
+		OutputStream:        os.Stdout,
+		RmTmpContainer:      true,
+		ForceRmTmpContainer: true,
+	}); err != nil {
+		return
+	}
+	return
+}
+
+func PushImage(d Docker, c *docker.Client) (err error) {
+
+	if err = c.PushImage(docker.PushImageOptions{
+		Name:         d.Repo,
+		Tag:          d.Tag,
+		OutputStream: os.Stdout,
+	}, docker.AuthConfiguration{
+		Username: d.Auth.Username,
+		Password: d.Auth.Password,
+	}); err != nil {
+		return
+	}
+
 	return
 }

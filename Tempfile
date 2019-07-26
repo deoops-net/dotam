@@ -1,7 +1,4 @@
-abc
-bcd
-        
-        
+foo
 {{#success build.status}}
 
 
