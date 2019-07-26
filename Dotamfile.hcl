@@ -6,20 +6,28 @@ temp "Tempfile" {
     }
 }
 
+temp "RELEASE" {
+    src = ".dotam/RELEASE"
+    dest = "."
+    var {
+        version = "{{versions.release}}"
+    }
+}
+
 git "dev" {
     add_type = "u"
     commit = ""
 }
 
-docker {
-    repo = "deoops/dotam"
-    tag = "{{versions.prod}}"
+// docker {
+//     repo = "deoops/dotam"
+//     tag = "{{versions.prod}}"
     
-    auth {
-        username = "tom"
-        password = "pass"
-    }
-}
+//     auth {
+//         username = "tom"
+//         password = "pass"
+//     }
+// }
 
 var "data" {
     temp = "foo"
@@ -27,6 +35,7 @@ var "data" {
 
 var "versions" {
     prod = "v0.1.1"
+    release = "v0.1.3-beta"
 }
 
 arg "reg_user" {

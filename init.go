@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/flosch/pongo2"
-	"github.com/hashicorp/hcl"
+	"strings"
+
 	"github.com/mitchellh/cli"
 	log "github.com/sirupsen/logrus"
 )
@@ -18,51 +18,52 @@ func (r InitCmd) Help() string {
 	return "this is help message"
 }
 
-func (r InitCmd) Run(args []string) int {
-	var dotamFile string
-	var renderData pongo2.Context
+func (r InitCmd) Run(args []string) (exitCode int) {
+	var destFile string
+	var destData string
+	var err error
 
+	defer func() {
+		if err != nil {
+			log.Error(err)
+			exitCode = -1
+			return
+		}
+		log.Infof("Congratulations! %s generated.", destFile)
+	}()
+	log.WithFields(log.Fields{"CMD INIT": "RUN"}).Debug(args)
+
+	// gen hcl as default
 	if len(args) == 0 {
-		dotamFile = Abs("Dotamfile.hcl")
+		destFile = DEMO_HCL
+		if err = genDemoFile(DemoHcl, destFile); err != nil {
+			return
+		}
 	} else {
-		dotamFile = Abs(args[0])
+		// TODO maybe we need a better parser
+		switch strings.Join(args, "") {
+		case "-tyaml", "-tyml":
+			destFile = DEMO_YAML
+			destData = DemoYaml
+		case "-thcl":
+			destFile = DEMO_HCL
+			destData = DemoHcl
+		case "-tjson":
+			destFile = DEMO_JSON
+			destData = DemoJson
+		}
+		log.Debug(destFile)
+		genDemoFile(destData, destFile)
 	}
 
-	data := ReadFile(dotamFile)
-	config := DotamConf{}
-	err := hcl.Decode(&config, string(data))
-	if err != nil {
-		log.Error(err)
-	}
-
-	if config.Var != nil {
-		renderData = VarToTplContext(config.Var)
-	}
-
-	newDotamSrc, err := Render(string(data), renderData)
-	if err != nil {
-		log.Error(err)
-		return -1
-	}
-	log.Debug(newDotamSrc)
-
-	newConfig := DotamConf{}
-	err = hcl.Decode(&newConfig, newDotamSrc)
-	if err != nil {
-		panic(err)
-	}
-
-	// log.Debug(newConfig.Temp)
-	if err = RunTasks(newConfig); err != nil {
-		log.Error(err)
-		return -1
-	}
-
-	log.Info("Congratulations! All works done!")
-
-	return 0
+	return
 }
 
 func (r InitCmd) Synopsis() string {
-	return "initial a demo conf file in current dir"
+	return string(`initial a demo conf file in current dir, as default it will generate a .hcl file, for specific format use: -t [yaml|yml, json, hcl]	
+	`)
+}
+
+func genDemoFile(data, file string) error {
+	return WriteFile(data, file)
 }

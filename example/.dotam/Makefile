@@ -11,3 +11,7 @@ test:
 .PHONY: run-dev
 run-dev:
 	LOG_LEVEL=debug go run . build
+
+.PHONY: run-dev-init
+run-dev-init:
+	LOG_LEVEL=debug go run . init

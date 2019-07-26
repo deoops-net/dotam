@@ -8,6 +8,10 @@ install:
 test:
 	go test -v -count=1
 
-.PHONY: run-dev
-run-dev:
+.PHONY: run-dev-build
+run-dev-build:
 	LOG_LEVEL=debug go run . build
+
+.PHONY: run-dev-init
+run-dev-init:
+	LOG_LEVEL=debug go run . init

@@ -8,8 +8,10 @@ import (
 )
 
 var CWD string
+var RELEASE_VERSION []byte
 
 func init() {
+	RELEASE_VERSION = ReadFile("RELEASE")
 	CWD, _ = os.Getwd()
 	initLogLevel()
 }
@@ -18,10 +20,8 @@ func initLogLevel() {
 	level := os.Getenv("LOG_LEVEL")
 
 	if level != "debug" {
-		// fmt.Println("log at error level")
 		log.SetLevel(log.InfoLevel)
 	} else {
-		// fmt.Println("log at debug level")
 		log.SetLevel(log.DebugLevel)
 	}
 
@@ -34,7 +34,7 @@ func main() {
 }
 
 func initCli() {
-	c := cli.NewCLI("dotam", "1.0.0-beta")
+	c := cli.NewCLI("dotam", string(RELEASE_VERSION))
 	c.Args = os.Args[1:]
 
 	c.Commands = map[string]cli.CommandFactory{
