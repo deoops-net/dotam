@@ -1,2 +1,7 @@
 {{data}}
 {{ "{{#success build.status}}"|safe }}
+{# foothing{{#abc}} #}
+{% comment %}
+foo
+{% endcomment%}
+abc

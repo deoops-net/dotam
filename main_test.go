@@ -29,7 +29,6 @@ func TestExist(t *testing.T) {
 	results := []bool{}
 
 	for _, f := range files {
-		t.Log(Exist(f))
 		results = append(results, Exist(f))
 	}
 	if !reflect.DeepEqual(expects, results) {
@@ -46,6 +45,32 @@ func TestParseYaml(t *testing.T) {
 		fmt.Println(err)
 		t.Fail()
 	}
-	fmt.Println(c)
 
+}
+
+func TestParseArgs(t *testing.T) {
+	data := []string{"Dotamfile.hcl", "reg_user=tom", "reg_pass=foo"}
+	data2 := []string{"reg_user=tom", "foo=bar"}
+
+	f, a := ParseBuildArgs(data)
+	if !reflect.DeepEqual([]string{"reg_user=tom", "reg_pass=foo"}, a) {
+		t.Log(a)
+		t.Fail()
+	}
+
+	if f != "Dotamfile.hcl" {
+		t.Log(f)
+		t.Fail()
+	}
+
+	f2, a2 := ParseBuildArgs(data2)
+	if !reflect.DeepEqual([]string{"reg_user=tom", "foo=bar"}, a2) {
+		t.Log(a2)
+		t.Fail()
+	}
+
+	if f2 != "" {
+		t.Log(f2)
+		t.Fail()
+	}
 }

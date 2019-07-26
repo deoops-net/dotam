@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/flosch/pongo2"
 	log "github.com/sirupsen/logrus"
@@ -107,4 +108,18 @@ func Exist(path string) bool {
 		return true
 	}
 
+}
+
+func ParseBuildArgs(src []string) (dotamFile string, dest []string) {
+
+	str := strings.Join(src, " ")
+	for _, d := range DEFAULT_DOTAMFILES {
+		if strings.Contains(str, d) {
+			dotamFile = d
+		}
+		str = strings.Replace(str, d, "", -1)
+		str = strings.TrimSpace(str)
+	}
+	dest = strings.Split(str, " ")
+	return
 }

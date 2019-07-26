@@ -8,9 +8,29 @@ temp "Tempfile" {
     }
 }
 
+git "dev" {
+    add_type = "u"
+    commit = ""
+}
+
+docker {
+    repo = "deoops/dotam"
+    tag = "{{versions.prod}}"
+    username = "$reg_passwd"
+    passpord = "$reg_passwd"
+}
+
 var "data" {
     temp = <<TEMP
 abc
 bcd
         TEMP
+}
+
+arg "reg_user" {
+    type = "string"
+}
+
+arg "reg_passwd" {
+    type = "string"
 }

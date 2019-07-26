@@ -30,6 +30,8 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	var err error
 	var dotamFile string
 	var renderData pongo2.Context
+	var buildArgs []string
+	log.WithFields(log.Fields{"BUILD": "ARGS"}).Debug(args)
 
 	defer func() {
 		if err != nil {
@@ -48,7 +50,17 @@ func (r RunCmd) Run(args []string) (extCode int) {
 		}
 		dotamFile = Abs(defaultConf)
 	} else {
-		dotamFile = Abs(args[0])
+		dotamFile, buildArgs = ParseBuildArgs(args)
+		if dotamFile == "" {
+			if !exist {
+				err = errors.New("you need at least a conf file, pls see help doc")
+				return
+			} else {
+				dotamFile = defaultConf
+			}
+		}
+		log.WithFields(log.Fields{"BUILD": "PARSED ARGS"}).Debug(buildArgs)
+
 	}
 
 	data := ReadFile(dotamFile)
@@ -61,23 +73,20 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	if config.Var != nil {
 		renderData = VarToTplContext(config.Var)
 	}
-	log.Debug("ooo")
 	log.Debug(renderData)
-	log.Debug("******")
 
 	newDotamSrc, err := Render(string(data), renderData)
 	if err != nil {
 		// log.Error(err)
 		return -1
 	}
-	log.Debug("!!!!")
+
 	log.Debug(newDotamSrc)
 
 	newConfig := DotamConf{}
 	if err = parseConf(&newConfig, newDotamSrc, dotamFile); err != nil {
 		return
 	}
-	log.Debug("00000")
 	log.Debug(newConfig)
 
 	if err = RunTasks(newConfig); err != nil {

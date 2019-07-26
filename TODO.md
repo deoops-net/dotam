@@ -9,6 +9,7 @@
 * 模板插件完整支持
 * cli基本命令支持`build, init`
 * plugin完整支持
+* 完善文档
 
 **todos:**
 
@@ -18,11 +19,20 @@
     - [x] yaml
     - [x] hcl
 - [ ] !! init命令
+- [ ] !! 文档
+    - [ ] template syntax
+        - [ ] en
+        - [ ] zh
 - [ ] ! 自举
 - [ ] ! git 插件
 - [ ] ! docker 插件
 - [ ] ! refactor code
+- [ ] !! build args
 
 ----
 
 ## V 2.0.0
+
+**目标：**
+
+* 兼容drone
