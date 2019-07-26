@@ -17,6 +17,8 @@ Dotam 读法 dot-am, 原意为dotfiles automation。
     - [使用](#使用)
         - [运行](#运行)
         - [初始化](#初始化)
+    - [文档](#文档)
+        - [模板语法](#模板语法)
     - [注意及常见问题](#注意及常见问题)
         - [获取支持](#获取支持)
         - [语法冲突](#语法冲突)
@@ -34,8 +36,8 @@ Dotam 读法 dot-am, 原意为dotfiles automation。
 ## 特性
 
 * 编程语言无关
-* 配置简单
-* 支持多配置语法`json,yml,hcl`
+* 配置简单，几乎没什么学习成本
+* 支持多配置语言json,yml,hcl
 * 内置方便的插件git, docker等
 * 简单的自定义插件化
 
@@ -49,80 +51,27 @@ PS: 如果你懒得每次从别的项目拷贝一个配置文件过来那么你�
 Dotamfile.hcl:
 
 ```hcl
-temp "Makefile" {
-    src = "examples/.dotam/Makefile"
-    dest = "./"
+temp "RELEASE" {
+    src = ".dotam/RELEASE"
+    dest = "."
     var {
-        version = "{{versions.prod}}"
-        tag = "0.1.2"
+        version = "{{versions.release}}"
     }
 }
 
-plugin "docker" {
-    command = "docker"
-    args = ["build", "-t", "{{docker.repo}}", "{{versions.prod}}", "."]
-    settings {
-        level = "{{publish.level}}"
+docker {
+    repo = "deoops/dotam"
+    tag = "{{versions.release}}"
+    
+    auth {
+        username = "tom"
+        password = "some key takes you home"
     }
 }
 
 var "versions" {
-    prod = "v1.0.0"
-    stage = "v1.0.3"
-}
-
-var "publish" {
-    level = "prodution"
-}
-
-var "docker" {
-    repo = "deoops/dotam"
-}
-
-```
-
-Dotamfile.yml
-
-```yml
-temp:
-  Makefile:
-    src: "examples/.dotam/Makefile"
-    dest: "./"
-    var:
-    - version: "{{versions.prod}}"
-    - tag: "0.1.2"
-
-plugin:
-  docker:
-    command: "docker"
-    args: 
-    - build
-    - -t
-    - "{{docker.repo}}"
-    - "{{versions.prod}}"
-    - "."
-    settings:
-    - level: "{{publish.level}}"
-
-var:
-  versions:
-  - prod: "v1.0.0"
-  - stage: "v1.0.3"
-  publish:
-  - level: "production"
-  docker:
-  - repo: "deoops/dotam"
-
-```
-
-Dotamfile.json
-
-```json
-{
-    "temp": {
-        "Makefile": {}
-    }
-    ...
+    prod = "v0.1.1"
+    release = "v0.1.3-beta"
 }
 
 ```
@@ -169,9 +118,18 @@ make install
 
 ### 初始化
 
-`dotam init [-t yml,json,hcl]`
+`dotam init [-t yml|yaml,json,hcl]`
 
 此命令会为项目创建一个模板配置文件，可以通过`-t`指定创建的文件类型。
+
+
+## 文档
+
+### 模板语法
+
+通常的变量只需要通过{{variable}}的方式使用即可, 你可以参考`example/.dotam`目录下的示例用法。
+本项目的模板引擎目前依赖于[pongo2](https://github.com/flosch/pongo2)这个项目, 如果你对一些高阶的模板语法有需求可以到此项目下查看更多的文档。
+
 
 ## 注意及常见问题
 
