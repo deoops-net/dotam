@@ -2,6 +2,9 @@
 
 Dotam 读法 dot-am, 原意为dotfiles automation。
 
+<!-- TOC <!-- TOC -->autoauto- [Dotam](#dotam)auto    - [为什么创建另一个自动化工具](#为什么创建另一个自动化工具)auto    - [特性](#特性)auto    - [快览](#快览)auto    - [安装](#安装)auto    - [使用](#使用)auto        - [运行](#运行)auto        - [初始化](#初始化)auto    - [注意及常见问题](#注意及常见问题)auto        - [语法冲突](#语法冲突)autoauto<!-- /TOC -->-->autoauto- [Dotam](#dotam)auto    - [为什么创建另一个自动化工具](#为什么创建另一个自动化工具)auto    - [特性](#特性)auto    - [快览](#快览)auto    - [安装](#安装)auto    - [使用](#使用)auto        - [运行](#运行)auto        - [初始化](#初始化)auto    - [注意及常见问题](#注意及常见问题)auto        - [语法冲突](#语法冲突)autoauto<!-- /TOC -->
+
+
 ## 为什么创建另一个自动化工具
 
 我自己在团队中的角色既是一个开发者（负责开发实现业务逻辑），同时我也是一个Devops（我需要自己写ci files,部署到kubernetes的相关yamls等等）。
