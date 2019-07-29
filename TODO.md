@@ -18,19 +18,20 @@
     - [x] json
     - [x] yaml
     - [x] hcl
-- [ ] !! init命令
+- [x] !! init命令
 - [ ] !! 文档
     - [ ] template syntax
         - [ ] en
         - [ ] zh
 - [ ] ! 自举
 - [ ] ! git 插件
+    - [ ] git hook
 - [ ] ! docker 插件
     - [x] !! build
     - [x] !! push
-    - [ ] pass auth from command line
+    - [x] pass auth from command line
 - [ ] ! refactor code
-- [ ] !! build args
+- [x] !! build args
     - [x] ! 参数及conf文件自动解析
 
 ----

@@ -1,5 +1,7 @@
 # Dotam
 
+[English Docs](./README.en.md)
+
 Dotam 读法 dot-am, 原意为dotfiles automation。
 
 <!-- TOC -->
@@ -68,7 +70,7 @@ docker {
     
     auth {
         username = "tom"
-        password = "some key takes you home"
+        password = "_args.reg_pass"
     }
 }
 
