@@ -4,6 +4,27 @@ Dotam pronounced as dot-am, means dotfiles automation。
 
 <!-- TOC -->
 
+- [Dotam](#dotam)
+    - [Why Another Automation Tool](#why-another-automation-tool)
+    - [Features](#features)
+    - [Quick Start](#quick-start)
+    - [Installation](#installation)
+        - [**homebrew**](#homebrew)
+        - [**Pre-build binaries**](#pre-build-binaries)
+        - [**goland**](#goland)
+        - [**Docker**](#docker)
+        - [**debugging or install from source**](#debugging-or-install-from-source)
+    - [Usage](#usage)
+        - [run](#run)
+        - [initial a template](#initial-a-template)
+    - [References](#references)
+        - [Template module](#template-module)
+        - [Docker module](#docker-module)
+        - [Plugin](#plugin)
+        - [Tempalte Syntax](#tempalte-syntax)
+    - [FAQ](#faq)
+        - [Get Support](#get-support)
+
 <!-- /TOC -->
 
 ## Why Another Automation Tool
@@ -20,7 +41,7 @@ at the same time we also need to implement a system lock for resource racing).
 
 I did some research, but no one meets this, so I try to build this one.
 
-## 特性
+## Features
 
 * language independent
 * simple, low study curve
@@ -189,14 +210,14 @@ a strong and simple docker scheduler is necessary.
 
 **Not Implemented**
 
-### 模板语法
+### Tempalte Syntax
 
 For some static variables you can just use {{variable}} mentioned above.
 For some advanced template features, you can follow the [pongo2](https://github.com/flosch/pongo2) project
 
-## 注意及常见问题
+## FAQ
 
-### 获取支持
+### Get Support
 
 * if you have questions when using this tool, feel free to send me a email: `techmesh@aliyun.com.`
 
