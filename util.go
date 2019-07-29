@@ -45,14 +45,22 @@ func Render(src string, data pongo2.Context) (out string, err error) {
 	return
 }
 
-func VarToTplContext(vars map[string]Var) pongo2.Context {
+func VarToTplContext(vars map[string]Var, args CmdArgs) pongo2.Context {
 	c := pongo2.Context{}
+	c["_args"] = args
 	for k, v := range vars {
 		c[k] = v
 	}
 
 	return c
 }
+
+//func AppendToTplContext(c *pongo2.Context, conf map[string]interface{}) {
+//	c["$args"] = map[string]interface{}{}
+//	for k, v := range conf {
+//		c["$args"] = m
+//	}
+//}
 
 func TempVarToTplContext(vars map[string]interface{}) pongo2.Context {
 	c := pongo2.Context{}
@@ -175,6 +183,8 @@ func BuildImage(d Docker, c *docker.Client) (err error) {
 	return
 }
 
+// PushImage ...
+// TODO
 func PushImage(d Docker, c *docker.Client) (err error) {
 
 	if err = c.PushImage(docker.PushImageOptions{
@@ -189,4 +199,11 @@ func PushImage(d Docker, c *docker.Client) (err error) {
 	}
 
 	return
+}
+
+func ArgsToMiddleTemp(conf *DotamConf, args []string) {
+	for _, v := range args {
+		p := strings.Split(v, "=")
+		conf.CmdArgs[p[0]] = p[1]
+	}
 }

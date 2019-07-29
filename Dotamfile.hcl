@@ -19,15 +19,15 @@ git "dev" {
     commit = ""
 }
 
-// docker {
-//     repo = "deoops/dotam"
-//     tag = "{{versions.prod}}"
-    
-//     auth {
-//         username = "tom"
-//         password = "pass"
-//     }
-// }
+ docker {
+     repo = "deoops/dotam"
+     tag = "{{versions.prod}}"
+
+     auth {
+         username = "{{_args.reg_user}}"
+         password = "{{_args.reg_pass}}"
+     }
+ }
 
 var "data" {
     temp = "foo"
@@ -38,10 +38,3 @@ var "versions" {
     release = "v0.1.3-beta"
 }
 
-arg "reg_user" {
-    type = "string"
-}
-
-arg "reg_passwd" {
-    type = "string"
-}

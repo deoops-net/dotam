@@ -31,6 +31,7 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	var dotamFile string
 	var renderData pongo2.Context
 	var buildArgs []string
+	config := DotamConf{}
 	log.WithFields(log.Fields{"BUILD": "ARGS"}).Debug(args)
 
 	defer func() {
@@ -50,7 +51,9 @@ func (r RunCmd) Run(args []string) (extCode int) {
 		}
 		dotamFile = Abs(defaultConf)
 	} else {
+		config.CmdArgs = map[string]interface{}{}
 		dotamFile, buildArgs = ParseBuildArgs(args)
+
 		if dotamFile == "" {
 			if !exist {
 				err = errors.New("you need at least a conf file, pls see help doc")
@@ -64,26 +67,33 @@ func (r RunCmd) Run(args []string) (extCode int) {
 
 	}
 
-	// read src conf
+	// read src dotamfile
 	data := ReadFile(dotamFile)
-	config := DotamConf{}
 	if err = parseConf(&config, string(data), dotamFile); err != nil {
 		return
 	}
 	log.Debug(config)
+	// convert args into middle variables append to middle conf
+	// 1, convert cli args to map[string]interface
+	// 2, append args to pongo config
+	// 3, replace $variable to pongo mark {{}}
+	// 4, render them to middle
+	ArgsToMiddleTemp(&config, buildArgs)
+	log.WithFields(log.Fields{"BUILD": "CMD ARGS"}).Debug(config)
 
 	if config.Var != nil {
-		renderData = VarToTplContext(config.Var)
+		renderData = VarToTplContext(config.Var, config.CmdArgs)
+		//renderData = AppendToTplContext(config.CmdArgs)
 	}
-	log.Debug(renderData)
+	log.WithFields(log.Fields{"BUILD": "CONF VARS"}).Debug(renderData)
 
+	// after render middle remove this middle variables
 	// render middle conf
 	newDotamSrc, err := Render(string(data), renderData)
 	if err != nil {
 		return -1
 	}
-
-	log.Debug(newDotamSrc)
+	log.WithFields(log.Fields{"BUILD": "RENDERED DOC"}).Debug(newDotamSrc)
 
 	newConfig := DotamConf{}
 	if err = parseConf(&newConfig, newDotamSrc, dotamFile); err != nil {

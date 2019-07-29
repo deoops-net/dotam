@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 
 	docker "github.com/fsouza/go-dockerclient"
@@ -101,4 +103,16 @@ func TestBuildDockerImage(t *testing.T) {
 		panic(err)
 	}
 	// log.Debug(DockerClient)
+}
+
+func TestParseBuildArgs(t *testing.T) {
+	args := []string{"reg=foo", "pass=bar"}
+	qs := strings.Join(args, "&")
+	data, err := url.ParseQuery(qs)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	}
+	fmt.Println(data)
+
 }

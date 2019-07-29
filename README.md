@@ -18,6 +18,9 @@ Dotam 读法 dot-am, 原意为dotfiles automation。
         - [运行](#运行)
         - [初始化](#初始化)
     - [文档](#文档)
+        - [Template 模块](#template-模块)
+        - [Docker模块](#docker模块)
+        - [Plugin](#plugin)
         - [模板语法](#模板语法)
     - [注意及常见问题](#注意及常见问题)
         - [获取支持](#获取支持)
@@ -125,20 +128,78 @@ make install
 
 ## 文档
 
+### Template 模块
+
+通常我们需要维护很多项目相关的静态文件，但是他们多数情况下需要一些动态属性，这就好比每次发布版本我们需要同步版本号到各种文件中去。
+比如：
+* 我们需要给CI配置文件指定要构建的Docker镜像的版本
+* 或者我们需要给用于`kubectl`部署`deployment`的yaml文件指定镜像版本
+* 我们的`main`函数也可能会读取某个文件来输出版本日志
+
+等等这些，每次维护起来就比较麻烦，所以我们可以通过**一处定义，多处同步**的方式来使用Template模块。
+
+Template模块的使用比较简单，这里有一个例子：
+
+```hcl
+temp "Makefile" {
+  # 指定从哪里读取模板文件
+  src = ".dotam/Makefile"
+  # 指定渲染后的文件的存放目录，一般是根目录即可
+  dest = "."
+  # 最后将模板用到变量定义好就可以了
+  var {
+    # 比如我们想传递给Makefile模板一个version变量 
+    version = "{{versions.production}}"
+  }
+
+}
+// 定义我们要传递的变量
+var {
+  versions {
+    prodution = "v1.0.0"
+  }
+}
+```
+
+
+### Docker模块
+
+Docker模块可以帮助我们在本地构建好镜像，并push到指定仓库。一个Docker模块的示例：
+
+```hcl
+docker {
+  repo = "deoops/dotam"
+  tag = "_args.version"
+  auth {
+    username = "_args.reg_user"
+    password = "_args.reg_pass"
+  }
+}
+```
+
+这里我们引入了一个新的内置变量`_args`，此变量用于获取从命令行传递的参数并传递给模板。由于一些敏感信息不适合在
+文档中记录，所以我们可以把这些数据通过命令行参数隐式的传递给dotam，dotam将会通过内置对象_args向下传递。所以
+上面的配置的命令行命令看起来应该是这样：
+
+```bash
+$ dotam build reg_user=tom reg_pass=password
+```
+
+### Plugin
+
+**Not Implemented**
+
 ### 模板语法
 
 通常的变量只需要通过{{variable}}的方式使用即可, 你可以参考`example/.dotam`目录下的示例用法。
 本项目的模板引擎目前依赖于[pongo2](https://github.com/flosch/pongo2)这个项目, 如果你对一些高阶的模板语法有需求可以到此项目下查看更多的文档。
 
-
 ## 注意及常见问题
-
 
 ### 获取支持
 
 * 你可以随时发送邮件到techmesh@aliyun.com来获取支持，我会在检查邮件时尽快回复。
 * 你也可以通过邮件来索要我的个人微信来获取即时支持。
-
 
 ### 语法冲突
 

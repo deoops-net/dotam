@@ -1,10 +1,11 @@
 package main
 
 type DotamConf struct {
-	Plugin map[string]Plugin `json:"plugin" hcl:"plugin" yaml:"plugin"`
-	Temp   map[string]Temp   `json:"temp" hcl:"temp" yaml:"temp"`
-	Var    map[string]Var    `json:"var" hcl:"var" yaml:"var"`
-	Docker Docker            `json:"docker" hcl:"docker" yaml:"docker"`
+	Plugin  map[string]Plugin `json:"plugin" hcl:"plugin" yaml:"plugin"`
+	Temp    map[string]Temp   `json:"temp" hcl:"temp" yaml:"temp"`
+	Var     map[string]Var    `json:"var" hcl:"var" yaml:"var"`
+	Docker  Docker            `json:"docker" hcl:"docker" yaml:"docker"`
+	CmdArgs CmdArgs           `json:"cmdArgs" hcl:"cmdArgs" yaml: "cmdArgs"`
 }
 
 type Plugin struct {
@@ -29,5 +30,11 @@ type Auth struct {
 	Username string `json:"username" hcl:"username" yaml:"username"`
 	Password string `json:"password" hcl:"password" yaml:"password"`
 }
+
+// CmdArgs ...
+// the params the after `build` command
+// e.g.
+// $dotam build reg_user=tom reg_pass=pass [Dotamfile.hcl]
+type CmdArgs map[string]interface{}
 
 type Var map[string]interface{}
