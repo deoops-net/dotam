@@ -195,6 +195,16 @@ docker {
     username = "_args.reg_user"
     password = "_args.reg_pass"
   }
+  caporal {
+    host = "your deployed caporal host"
+    name = "container name your want to start or update"
+    opts {
+      // the -p flag of docker run 
+      publish = ["8080:8080"]
+      // the network flag of docker run 
+      network = ""
+    }
+  }
 }
 ```
 
@@ -205,6 +215,9 @@ That is quite simple, why you should use the Docker module not use a build tool 
 In a further version, i will integrate a remote api-server for scheduling containers with this
 module.For teams already built there k8s cluster, there is no need, but for some small teams
 a strong and simple docker scheduler is necessary.
+
+[caporal](https://github.com/deoops-net/caporal) is an early version of container scheduling api server, basiclly it's now only support simple jobs
+like run or update a container remotely.but it will be under development for more features.
 
 ### Plugin
 
@@ -219,5 +232,5 @@ For some advanced template features, you can follow the [pongo2](https://github.
 
 ### Get Support
 
-* if you have questions when using this tool, feel free to send me a email: `techmesh@aliyun.com.`
+* if you have questions when using this tool, feel free to send me an email: `techmesh@aliyun.com.`
 

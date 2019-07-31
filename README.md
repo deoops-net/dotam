@@ -176,12 +176,25 @@ docker {
     username = "_args.reg_user"
     password = "_args.reg_pass"
   }
+  caporal {
+    host = "your deployed caporal host"
+    name = "container name your want to start or update"
+    opts {
+      // the -p flag of docker run 
+      publish = ["8080:8080"]
+      // the network flag of docker run 
+      network = ""
+    }
+  }
 }
 ```
 
 这里我们引入了一个新的内置变量`_args`，此变量用于获取从命令行传递的参数并传递给模板。由于一些敏感信息不适合在
 文档中记录，所以我们可以把这些数据通过命令行参数隐式的传递给dotam，dotam将会通过内置对象_args向下传递。所以
 上面的配置的命令行命令看起来应该是这样：
+
+[caporal](https://github.com/deoops-net/caporal)目前还是一个早期的版本，主要用来提供一个远程的api server来帮助我们运行和更新我们的容器服务，虽然
+现在功能还比较简单，但是这个项目还在持续的开发中，相信越来越多的功能将会集成进来。
 
 ```bash
 $ dotam build reg_user=tom reg_pass=password
