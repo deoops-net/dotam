@@ -27,6 +27,14 @@ git "dev" {
          username = "{{_args.reg_user}}"
          password = "{{_args.reg_pass}}"
      }
+
+     caporal {
+         host = "http://cd.wegeek.fun"
+         name = "dotam"
+         opts {
+             publish = ["8080:8080"]
+         }
+     }
  }
 
 var "data" {

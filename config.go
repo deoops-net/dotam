@@ -21,9 +21,23 @@ type Temp struct {
 }
 
 type Docker struct {
-	Repo string `json:"repo" hcl:"repo" yaml:"repo"`
-	Tag  string `json:"tag" hcl:"tag" yaml:"tag"`
-	Auth Auth   `json:"auth" hcl:"auth" yaml:"auth"`
+	Repo    string  `json:"repo" hcl:"repo" yaml:"repo"`
+	Tag     string  `json:"tag" hcl:"tag" yaml:"tag"`
+	Auth    Auth    `json:"auth" hcl:"auth" yaml:"auth"`
+	Caporal Caporal `json:"caporal" hcl:"caporal" yaml:"caporal"`
+}
+
+// Caporal is a built-in plugin for scheduling containers remotely
+type Caporal struct {
+	Host    string         `json:"host" hcl:"host" yaml:"host"`
+	Name    string         `json:"name" hcl:"name" yaml:"name"`
+	Options CaporalOptions `json:"opts" hcl:"opts" yaml: "opts"`
+}
+
+// CaporalOptions are flags for docker run
+type CaporalOptions struct {
+	Publish []string `json:"publish" hcl:"publish" yaml:"publish"`
+	Network string   `json:"network" hcl:"network" yaml:"network"`
 }
 
 type Auth struct {

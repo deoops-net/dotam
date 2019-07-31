@@ -1,9 +1,20 @@
 package main
 
 import (
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/md5"
+	"crypto/rand"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
+	"reflect"
 	"strings"
 
 	"github.com/flosch/pongo2"
@@ -113,9 +124,12 @@ func ProcessTemp(temps map[string]Temp) error {
 }
 
 func ProcessDocker(d Docker) (err error) {
-	if d == (Docker{}) {
+	if reflect.DeepEqual(d, Docker{}) {
 		return
 	}
+	//if d == (Docker{}) {
+	//	return
+	//}
 
 	c, err := docker.NewClientFromEnv()
 	if err != nil {
@@ -132,6 +146,10 @@ func ProcessDocker(d Docker) (err error) {
 	}
 
 	if err = PushImage(d, c); err != nil {
+		return
+	}
+
+	if err = ScheduleContainer(d, c); err != nil {
 		return
 	}
 
@@ -201,9 +219,111 @@ func PushImage(d Docker, c *docker.Client) (err error) {
 	return
 }
 
+// Schedule it with caporal
+func ScheduleContainer(d Docker, c *docker.Client) (err error) {
+	// just skip
+	if reflect.DeepEqual(d.Caporal, Caporal{}) {
+		return nil
+	}
+
+	j, err := json.Marshal(d)
+	log.WithFields(log.Fields{"DOCKER": "SCHEDULE"}).Debug(string(j))
+
+	// TODO move to a pre defined struct
+	//{"repo": "nginx", "tag": "latest", "name": "mynginx-2", "opts": {"publish": ["10009:80"]}}
+	postBody := struct {
+		Repo string         `json:"repo"`
+		Tag  string         `json:"tag"`
+		Name string         `json:"name"`
+		Opts CaporalOptions `json:"opts"`
+	}{
+		Repo: d.Repo,
+		Tag:  d.Tag,
+		Name: d.Caporal.Name,
+		Opts: d.Caporal.Options,
+	}
+	payload, err := json.Marshal(postBody)
+	if err != nil {
+		return
+	}
+
+	// do request for caporal
+	log.Debug(string(payload))
+	req, err := http.NewRequest("PUT", d.Caporal.Host+"/container", bytes.NewBuffer(payload))
+	authCode := base64.StdEncoding.EncodeToString(Encrypt([]byte(d.Auth.Username+":"+d.Auth.Password), "caoral-salt"))
+	log.WithFields(log.Fields{"CAPORAL": "AUTH CODE"}).Debug(authCode)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("X-AUTH", authCode)
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return
+	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+	defer res.Body.Close()
+	log.Debug(string(body))
+
+	log.Debug(res.StatusCode)
+
+	return
+}
+
 func ArgsToMiddleTemp(conf *DotamConf, args []string) {
 	for _, v := range args {
 		p := strings.Split(v, "=")
 		conf.CmdArgs[p[0]] = p[1]
 	}
+}
+
+func createHash(key string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(key))
+	return hex.EncodeToString(hasher.Sum(nil))
+}
+
+func Encrypt(data []byte, passphrase string) []byte {
+	block, _ := aes.NewCipher([]byte(createHash(passphrase)))
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		panic(err.Error())
+	}
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		panic(err.Error())
+	}
+	ciphertext := gcm.Seal(nonce, nonce, data, nil)
+	return ciphertext
+}
+
+func Decrypt(data []byte, passphrase string) []byte {
+	key := []byte(createHash(passphrase))
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err.Error())
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		panic(err.Error())
+	}
+	nonceSize := gcm.NonceSize()
+	nonce, ciphertext := data[:nonceSize], data[nonceSize:]
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		panic(err.Error())
+	}
+	return plaintext
+}
+
+func encryptFile(filename string, data []byte, passphrase string) {
+	f, _ := os.Create(filename)
+	defer f.Close()
+	f.Write(Encrypt(data, passphrase))
+}
+
+func decryptFile(filename string, passphrase string) []byte {
+	data, _ := ioutil.ReadFile(filename)
+	return Decrypt(data, passphrase)
 }
