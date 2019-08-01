@@ -3,17 +3,13 @@ package main
 import (
 	"os"
 
-	"github.com/mitchellh/cli"
+	cliTool "github.com/mitchellh/cli"
+	"github.com/techmesh/dotam/cli"
+
 	log "github.com/sirupsen/logrus"
 )
 
-var CWD string
-
-//var RELEASE_VERSION []byte
-
 func init() {
-	//RELEASE_VERSION = []byte(`0.1.42-beta`)
-	CWD, _ = os.Getwd()
 	initLogLevel()
 }
 
@@ -35,12 +31,12 @@ func main() {
 }
 
 func initCli() {
-	c := cli.NewCLI("dotam", string(RELEASE_VERSION))
+	c := cliTool.NewCLI("dotam", string(RELEASE_VERSION))
 	c.Args = os.Args[1:]
 
-	c.Commands = map[string]cli.CommandFactory{
-		"build": BuildCMDFactor,
-		"init":  InitCMDFactor,
+	c.Commands = map[string]cliTool.CommandFactory{
+		"build": cli.BuildCMDFactor,
+		"init":  cli.InitCMDFactor,
 	}
 
 	exitStatus, err := c.Run()

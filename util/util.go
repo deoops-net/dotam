@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"bytes"
@@ -16,6 +16,8 @@ import (
 	"os"
 	"reflect"
 	"strings"
+
+	"github.com/techmesh/dotam/conf"
 
 	"github.com/flosch/pongo2"
 	docker "github.com/fsouza/go-dockerclient"
@@ -39,6 +41,7 @@ func WriteFile(data, file string) error {
 }
 
 func Abs(path string) string {
+	CWD, _ := os.Getwd()
 	return fmt.Sprintf("%s/%s", CWD, path)
 }
 
@@ -56,7 +59,7 @@ func Render(src string, data pongo2.Context) (out string, err error) {
 	return
 }
 
-func VarToTplContext(vars map[string]Var, args CmdArgs) pongo2.Context {
+func VarToTplContext(vars map[string]conf.Var, args conf.CmdArgs) pongo2.Context {
 	c := pongo2.Context{}
 	c["_args"] = args
 	for k, v := range vars {
@@ -82,12 +85,12 @@ func TempVarToTplContext(vars map[string]interface{}) pongo2.Context {
 	return c
 }
 
-func RunTasks(conf DotamConf) (err error) {
-	if err = ProcessTemp(conf.Temp); err != nil {
+func RunTasks(cf conf.DotamConf) (err error) {
+	if err = ProcessTemp(cf.Temp); err != nil {
 		return
 	}
 
-	if err = ProcessDocker(conf.Docker); err != nil {
+	if err = ProcessDocker(cf.Docker); err != nil {
 		log.Error(err)
 		return
 	}
@@ -95,7 +98,7 @@ func RunTasks(conf DotamConf) (err error) {
 	return
 }
 
-func ProcessTemp(temps map[string]Temp) error {
+func ProcessTemp(temps map[string]conf.Temp) error {
 	if temps == nil {
 		return nil
 	}
@@ -124,8 +127,8 @@ func ProcessTemp(temps map[string]Temp) error {
 	return nil
 }
 
-func ProcessDocker(d Docker) (err error) {
-	if reflect.DeepEqual(d, Docker{}) {
+func ProcessDocker(d conf.Docker) (err error) {
+	if reflect.DeepEqual(d, conf.Docker{}) {
 		return
 	}
 
@@ -139,7 +142,7 @@ func ProcessDocker(d Docker) (err error) {
 		return
 	}
 
-	if d.Auth == (Auth{}) {
+	if d.Auth == (conf.Auth{}) {
 		return
 	}
 
@@ -165,7 +168,7 @@ func Exist(path string) bool {
 func ParseBuildArgs(src []string) (dotamFile string, dest []string) {
 
 	str := strings.Join(src, " ")
-	for _, d := range DEFAULT_DOTAMFILES {
+	for _, d := range conf.DEFAULT_DOTAMFILES {
 		if strings.Contains(str, d) {
 			dotamFile = d
 		}
@@ -176,7 +179,7 @@ func ParseBuildArgs(src []string) (dotamFile string, dest []string) {
 	return
 }
 
-func BuildImage(d Docker, c *docker.Client) (err error) {
+func BuildImage(d conf.Docker, c *docker.Client) (err error) {
 
 	dockerfile := ""
 	if len(d.Dockerfile) != 0 {
@@ -209,7 +212,7 @@ func BuildImage(d Docker, c *docker.Client) (err error) {
 
 // PushImage ...
 // TODO
-func PushImage(d Docker, c *docker.Client) (err error) {
+func PushImage(d conf.Docker, c *docker.Client) (err error) {
 
 	if err = c.PushImage(docker.PushImageOptions{
 		Name:         d.Repo,
@@ -226,9 +229,9 @@ func PushImage(d Docker, c *docker.Client) (err error) {
 }
 
 // Schedule it with caporal
-func ScheduleContainer(d Docker, c *docker.Client) (err error) {
+func ScheduleContainer(d conf.Docker, c *docker.Client) (err error) {
 	// just skip
-	if reflect.DeepEqual(d.Caporal, Caporal{}) {
+	if reflect.DeepEqual(d.Caporal, conf.Caporal{}) {
 		return nil
 	}
 
@@ -238,10 +241,10 @@ func ScheduleContainer(d Docker, c *docker.Client) (err error) {
 	// TODO move to a pre defined struct
 	//{"repo": "nginx", "tag": "latest", "name": "mynginx-2", "opts": {"publish": ["10009:80"]}}
 	postBody := struct {
-		Repo string         `json:"repo"`
-		Tag  string         `json:"tag"`
-		Name string         `json:"name"`
-		Opts CaporalOptions `json:"opts"`
+		Repo string              `json:"repo"`
+		Tag  string              `json:"tag"`
+		Name string              `json:"name"`
+		Opts conf.CaporalOptions `json:"opts"`
 	}{
 		Repo: d.Repo,
 		Tag:  d.Tag,
@@ -277,10 +280,10 @@ func ScheduleContainer(d Docker, c *docker.Client) (err error) {
 	return
 }
 
-func ArgsToMiddleTemp(conf *DotamConf, args []string) {
+func ArgsToMiddleTemp(cf *conf.DotamConf, args []string) {
 	for _, v := range args {
 		p := strings.Split(v, "=")
-		conf.CmdArgs[p[0]] = p[1]
+		cf.CmdArgs[p[0]] = p[1]
 	}
 }
 

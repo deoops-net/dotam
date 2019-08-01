@@ -1,4 +1,4 @@
-package main
+package conf
 
 import docker "github.com/fsouza/go-dockerclient"
 

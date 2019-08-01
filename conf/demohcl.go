@@ -1,4 +1,4 @@
-package main
+package conf
 
 var DemoHcl = string(`
 temp "RELEASE" {

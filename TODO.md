@@ -30,15 +30,16 @@
     - [x] !! build
     - [x] !! push
     - [x] ! pass auth from command line
-    - [ ] !! support multi tags for pushing
+    - [ ] !! support multi tags for pushing @ refactor code
     - [ ] !! health probe
     - [ ] !! ready probe
-    - [ ] !! support --build-args
+    - [x] !! support --build-args
     - [x] !! support specifying Dockerfile
     
     
     
 - [ ] ! refactor code
+    - [ ] !! better file&package structure
 - [ ] !! caporal
     - [x] 创建容器
     - [x] 更新容器

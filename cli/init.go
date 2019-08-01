@@ -1,7 +1,10 @@
-package main
+package cli
 
 import (
 	"strings"
+
+	"github.com/techmesh/dotam/conf"
+	"github.com/techmesh/dotam/util"
 
 	"github.com/mitchellh/cli"
 	log "github.com/sirupsen/logrus"
@@ -35,22 +38,22 @@ func (r InitCmd) Run(args []string) (exitCode int) {
 
 	// gen hcl as default
 	if len(args) == 0 {
-		destFile = DEMO_HCL
-		if err = genDemoFile(DemoHcl, destFile); err != nil {
+		destFile = conf.DEMO_HCL
+		if err = genDemoFile(conf.DemoHcl, destFile); err != nil {
 			return
 		}
 	} else {
 		// TODO maybe we need a better parser
 		switch strings.Join(args, "") {
 		case "-tyaml", "-tyml":
-			destFile = DEMO_YAML
-			destData = DemoYaml
+			destFile = conf.DEMO_YAML
+			destData = conf.DemoYaml
 		case "-thcl":
-			destFile = DEMO_HCL
-			destData = DemoHcl
+			destFile = conf.DEMO_HCL
+			destData = conf.DemoHcl
 		case "-tjson":
-			destFile = DEMO_JSON
-			destData = DemoJson
+			destFile = conf.DEMO_JSON
+			destData = conf.DemoJson
 		}
 		log.Debug(destFile)
 		genDemoFile(destData, destFile)
@@ -65,5 +68,5 @@ func (r InitCmd) Synopsis() string {
 }
 
 func genDemoFile(data, file string) error {
-	return WriteFile(data, file)
+	return util.WriteFile(data, file)
 }

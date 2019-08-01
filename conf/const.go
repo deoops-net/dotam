@@ -1,4 +1,4 @@
-package main
+package conf
 
 const SETTINGS_PREFIX = "DOTAM_"
 const DEFAULT_DOTAMFILE = "Dotamfile.hcl"

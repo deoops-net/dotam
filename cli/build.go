@@ -1,9 +1,13 @@
-package main
+package cli
 
 import (
 	"encoding/json"
 	"errors"
 	"path/filepath"
+
+	"github.com/techmesh/dotam/util"
+
+	"github.com/techmesh/dotam/conf"
 
 	"github.com/flosch/pongo2"
 	"github.com/hashicorp/hcl"
@@ -31,7 +35,7 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	var dotamFile string
 	var renderData pongo2.Context
 	var buildArgs []string
-	config := DotamConf{}
+	config := conf.DotamConf{}
 	log.WithFields(log.Fields{"BUILD": "ARGS"}).Debug(args)
 
 	defer func() {
@@ -49,10 +53,10 @@ func (r RunCmd) Run(args []string) (extCode int) {
 			err = errors.New("you need at least a conf file, pls see help doc")
 			return
 		}
-		dotamFile = Abs(defaultConf)
+		dotamFile = util.Abs(defaultConf)
 	} else {
 		config.CmdArgs = map[string]interface{}{}
-		dotamFile, buildArgs = ParseBuildArgs(args)
+		dotamFile, buildArgs = util.ParseBuildArgs(args)
 
 		if dotamFile == "" {
 			if !exist {
@@ -68,7 +72,7 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	}
 
 	// read src dotamfile
-	data := ReadFile(dotamFile)
+	data := util.ReadFile(dotamFile)
 	if err = parseConf(&config, string(data), dotamFile); err != nil {
 		return
 	}
@@ -78,30 +82,30 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	// 2, append args to pongo config
 	// 3, replace $variable to pongo mark {{}}
 	// 4, render them to middle
-	ArgsToMiddleTemp(&config, buildArgs)
+	util.ArgsToMiddleTemp(&config, buildArgs)
 	log.WithFields(log.Fields{"BUILD": "CMD ARGS"}).Debug(config)
 
 	if config.Var != nil {
-		renderData = VarToTplContext(config.Var, config.CmdArgs)
+		renderData = util.VarToTplContext(config.Var, config.CmdArgs)
 		//renderData = AppendToTplContext(config.CmdArgs)
 	}
 	log.WithFields(log.Fields{"BUILD": "CONF VARS"}).Debug(renderData)
 
 	// after render middle remove this middle variables
 	// render middle conf
-	newDotamSrc, err := Render(string(data), renderData)
+	newDotamSrc, err := util.Render(string(data), renderData)
 	if err != nil {
 		return -1
 	}
 	log.WithFields(log.Fields{"BUILD": "RENDERED DOC"}).Debug(newDotamSrc)
 
-	newConfig := DotamConf{}
+	newConfig := conf.DotamConf{}
 	if err = parseConf(&newConfig, newDotamSrc, dotamFile); err != nil {
 		return
 	}
 	log.Debug(newConfig)
 
-	if err = RunTasks(newConfig); err != nil {
+	if err = util.RunTasks(newConfig); err != nil {
 		log.Error(err)
 		return
 	}
@@ -115,8 +119,8 @@ func (r RunCmd) Synopsis() string {
 }
 
 func hasDefaultConf() (f string, e bool) {
-	for _, v := range DEFAULT_DOTAMFILES {
-		if Exist(v) {
+	for _, v := range conf.DEFAULT_DOTAMFILES {
+		if util.Exist(v) {
 			f = v
 			e = true
 			return
@@ -126,7 +130,7 @@ func hasDefaultConf() (f string, e bool) {
 	return
 }
 
-func parseConf(conf *DotamConf, data, dotamFile string) error {
+func parseConf(conf *conf.DotamConf, data, dotamFile string) error {
 	// data := ReadFile(dotamFile)
 	ext := filepath.Ext(dotamFile)
 	log.Debug("parsing conf file ext is: ", ext)
