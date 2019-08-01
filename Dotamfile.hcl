@@ -14,6 +14,13 @@ temp "version.go" {
  docker {
      repo = "deoops/dotam"
      tag = "{{versions.prod}}"
+     dockerfile = "Dockerfile.test"
+     buildArgs = [
+         {
+             key = "foo"
+             value = "abc"
+         }
+     ]
 
      auth {
          username = "{{_args.reg_user}}"

@@ -174,6 +174,15 @@ Docker模块可以帮助我们在本地构建好镜像，并push到指定仓库�
 docker {
   repo = "deoops/dotam"
   tag = "_args.version"
+  // 如果需要制定某一个Dockerfile可以使用这个选项
+  dockerfile = "Dockerfile"
+  // 一些情况需要用的--build-args参数
+  buildArgs = [
+    {
+      key = "foo"
+      value = "bar"
+    } 
+  ]
   auth {
     username = "_args.reg_user"
     password = "_args.reg_pass"

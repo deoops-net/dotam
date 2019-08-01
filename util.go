@@ -128,9 +128,6 @@ func ProcessDocker(d Docker) (err error) {
 	if reflect.DeepEqual(d, Docker{}) {
 		return
 	}
-	//if d == (Docker{}) {
-	//	return
-	//}
 
 	c, err := docker.NewClientFromEnv()
 	if err != nil {
@@ -193,6 +190,7 @@ func BuildImage(d Docker, c *docker.Client) (err error) {
 
 	imageName := d.Repo + ":" + d.Tag
 	log.Debug(imageName)
+	log.WithFields(log.Fields{"DOCKER": "BUILD ARGS FLAG"}).Debug(d.CreateBuildArgs())
 	// TODO parse Dockerfile from conf
 	if err = c.BuildImage(docker.BuildImageOptions{
 		Name:                imageName,
@@ -202,6 +200,7 @@ func BuildImage(d Docker, c *docker.Client) (err error) {
 		OutputStream:        os.Stdout,
 		RmTmpContainer:      true,
 		ForceRmTmpContainer: true,
+		BuildArgs:           d.CreateBuildArgs(),
 	}); err != nil {
 		return
 	}

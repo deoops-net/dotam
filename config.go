@@ -1,5 +1,7 @@
 package main
 
+import docker "github.com/fsouza/go-dockerclient"
+
 type DotamConf struct {
 	Plugin  map[string]Plugin `json:"plugin" hcl:"plugin" yaml:"plugin"`
 	Temp    map[string]Temp   `json:"temp" hcl:"temp" yaml:"temp"`
@@ -21,11 +23,18 @@ type Temp struct {
 }
 
 type Docker struct {
-	Repo       string  `json:"repo" hcl:"repo" yaml:"repo"`
-	Tag        string  `json:"tag" hcl:"tag" yaml:"tag"`
-	Dockerfile string  `json:"dockerfile,omitempty" hcl:"dockerfile,omitempty" yaml:"dockerfile,omitempty"`
-	Auth       Auth    `json:"auth" hcl:"auth" yaml:"auth"`
-	Caporal    Caporal `json:"caporal" hcl:"caporal" yaml:"caporal"`
+	Repo       string     `json:"repo" hcl:"repo" yaml:"repo"`
+	Tag        string     `json:"tag" hcl:"tag" yaml:"tag"`
+	Dockerfile string     `json:"dockerfile,omitempty" hcl:"dockerfile,omitempty" yaml:"dockerfile,omitempty"`
+	BuildArgs  []BuildArg `json:"buildArgs,omitempty" hcl:"buildArgs,omitempty" yaml:"buildArgs,omitempty"`
+	Auth       Auth       `json:"auth" hcl:"auth" yaml:"auth"`
+	Caporal    Caporal    `json:"caporal" hcl:"caporal" yaml:"caporal"`
+}
+
+// BuildArg the docker --build-args
+type BuildArg struct {
+	Key   string `json:"key,omitempty" hcl:"key,omitempty" yaml:"key,omitempty"`
+	Value string `json:"value,omitempty" hcl:"value,omitempty" yaml:"value,omitempty"`
 }
 
 // Caporal is a built-in plugin for scheduling containers remotely
@@ -58,3 +67,20 @@ type Auth struct {
 type CmdArgs map[string]interface{}
 
 type Var map[string]interface{}
+
+func (d Docker) CreateBuildArgs() []docker.BuildArg {
+	ba := []docker.BuildArg{}
+	if d.BuildArgs == nil {
+		return nil
+	}
+
+	for _, v := range d.BuildArgs {
+		b := docker.BuildArg{
+			Name:  v.Key,
+			Value: v.Value,
+		}
+		ba = append(ba, b)
+	}
+
+	return ba
+}

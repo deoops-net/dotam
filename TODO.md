@@ -31,7 +31,12 @@
     - [x] !! push
     - [x] ! pass auth from command line
     - [ ] !! support multi tags for pushing
+    - [ ] !! health probe
+    - [ ] !! ready probe
+    - [ ] !! support --build-args
     - [x] !! support specifying Dockerfile
+    
+    
     
 - [ ] ! refactor code
 - [ ] !! caporal
