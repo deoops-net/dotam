@@ -88,6 +88,9 @@ var "versions" {
 ```bash
 brew install deoops-net/tap/dotam
 
+// update
+brew uninstall dotam
+brew install deoops-net/tap/dotam
 ```
 
 ### **预编译二进制**
