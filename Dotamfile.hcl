@@ -33,6 +33,13 @@ git "dev" {
          name = "dotam"
          opts {
              publish = ["8080:8080"]
+             mount = [
+                 {
+                     bind = "/tmp/foo:/tmp/foo"
+                     type = "bind"
+                 }
+             ]
+
          }
      }
  }

@@ -36,8 +36,13 @@ type Caporal struct {
 
 // CaporalOptions are flags for docker run
 type CaporalOptions struct {
-	Publish []string `json:"publish" hcl:"publish" yaml:"publish"`
-	Network string   `json:"network" hcl:"network" yaml:"network"`
+	Publish []string    `json:"publish" hcl:"publish" yaml:"publish"`
+	Network string      `json:"network" hcl:"network" yaml:"network"`
+	Mount   []HostMount `json:"mount" hcl:"mount" yaml:"mount"`
+}
+type HostMount struct {
+	Bind string `json:"bind" hcl:"bind" yaml:"bind"`
+	Type string `json:"type" hcl:"type" yaml:"type"`
 }
 
 type Auth struct {

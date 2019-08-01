@@ -88,6 +88,7 @@ func RunTasks(conf DotamConf) (err error) {
 	}
 
 	if err = ProcessDocker(conf.Docker); err != nil {
+		log.Error(err)
 		return
 	}
 

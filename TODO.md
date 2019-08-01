@@ -20,9 +20,9 @@
     - [x] hcl
 - [x] !! init命令
 - [ ] !! 文档
-    - [ ] template syntax
-        - [ ] en
-        - [ ] zh
+    - [x] template syntax
+        - [x] en
+        - [x] zh
 - [ ] ! 自举
 - [ ] ! git 插件
     - [ ] git hook
@@ -31,6 +31,16 @@
     - [x] !! push
     - [x] pass auth from command line
 - [ ] ! refactor code
+- [ ] !! caporal
+    - [x] 创建容器
+    - [x] 更新容器
+    - [x] 指定网络
+    - [x] 指定volume
+    - [ ] more opts support
+    
+- [ ] !!三方插件支持
+    
+- [ ] ! 完善日志
 - [x] !! build args
     - [x] ! 参数及conf文件自动解析
 
