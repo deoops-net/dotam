@@ -1,34 +1,19 @@
-# Dotam
+
+
+<h1 align="center">
+  <p align="center">Dotam</p>
+<!--   <a href="https://docusaurus.io"><img src="https://docusaurus.io/img/slash-introducing.svg" alt="Docusaurus"></a> -->
+</h1>
+<p align="center">
+<a href="CONTRIBUTING.md#pull-requests"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+</p>
+
 
 [English Docs](./README.en.md)
 
-Dotam 读法 dot-am, 原意为dotfiles automation。
+Dotam 读法 dot-am, 原意为: dotfiles automation。
 
-<!-- TOC -->
-
-- [Dotam](#dotam)
-    - [为什么创建另一个自动化工具](#为什么创建另一个自动化工具)
-    - [特性](#特性)
-    - [快览](#快览)
-    - [安装](#安装)
-        - [**homebrew**](#homebrew)
-        - [**预编译二进制**](#预编译二进制)
-        - [**通过go安装**](#通过go安装)
-        - [**Docker**](#docker)
-        - [**开发及源码安装**](#开发及源码安装)
-    - [使用](#使用)
-        - [运行](#运行)
-        - [初始化](#初始化)
-    - [文档](#文档)
-        - [Template 模块](#template-模块)
-        - [Docker模块](#docker模块)
-        - [Plugin](#plugin)
-        - [模板语法](#模板语法)
-    - [注意及常见问题](#注意及常见问题)
-        - [获取支持](#获取支持)
-        - [语法冲突](#语法冲突)
-
-<!-- /TOC -->
+## 介绍
 
 ## 为什么创建另一个自动化工具
 
