@@ -1,22 +1,14 @@
-temp "Tempfile" {
-    src = "example/.dotam/Tempfile"
-    dest = "."
-    var {
-        data = "{{data.temp|safe}}"
-    }
+var "versions" {
+    prod = "v0.1.1"
+    release = "v0.1.44-beta"
 }
 
-temp "RELEASE" {
-    src = ".dotam/RELEASE"
+temp "version.go" {
+    src = ".dotam/version.go"
     dest = "."
     var {
         version = "{{versions.release}}"
     }
-}
-
-git "dev" {
-    add_type = "u"
-    commit = ""
 }
 
  docker {
@@ -27,29 +19,6 @@ git "dev" {
          username = "{{_args.reg_user}}"
          password = "{{_args.reg_pass}}"
      }
-
-     caporal {
-         host = "http://cd.wegeek.fun"
-         name = "dotam"
-         opts {
-             publish = ["8080:8080"]
-             mount = [
-                 {
-                     bind = "/tmp/foo:/tmp/foo"
-                     type = "bind"
-                 }
-             ]
-
-         }
-     }
  }
 
-var "data" {
-    temp = "foo"
-}
-
-var "versions" {
-    prod = "v0.1.1"
-    release = "v0.1.3-beta"
-}
 
