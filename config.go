@@ -21,10 +21,11 @@ type Temp struct {
 }
 
 type Docker struct {
-	Repo    string  `json:"repo" hcl:"repo" yaml:"repo"`
-	Tag     string  `json:"tag" hcl:"tag" yaml:"tag"`
-	Auth    Auth    `json:"auth" hcl:"auth" yaml:"auth"`
-	Caporal Caporal `json:"caporal" hcl:"caporal" yaml:"caporal"`
+	Repo       string  `json:"repo" hcl:"repo" yaml:"repo"`
+	Tag        string  `json:"tag" hcl:"tag" yaml:"tag"`
+	Dockerfile string  `json:"dockerfile,omitempty" hcl:"dockerfile,omitempty" yaml:"dockerfile,omitempty"`
+	Auth       Auth    `json:"auth" hcl:"auth" yaml:"auth"`
+	Caporal    Caporal `json:"caporal" hcl:"caporal" yaml:"caporal"`
 }
 
 // Caporal is a built-in plugin for scheduling containers remotely

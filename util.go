@@ -181,6 +181,12 @@ func ParseBuildArgs(src []string) (dotamFile string, dest []string) {
 
 func BuildImage(d Docker, c *docker.Client) (err error) {
 
+	dockerfile := ""
+	if len(d.Dockerfile) != 0 {
+		dockerfile = d.Dockerfile
+	} else {
+		dockerfile = "Dockerfile"
+	}
 	log.WithFields(log.Fields{"PROCESS": "DOCKER REPO"}).Debug(d.Repo)
 	log.WithFields(log.Fields{"PROCESS": "DOCKER TAG"}).Debug(d.Tag)
 	log.WithFields(log.Fields{"PROCESS": "DOCKER AUTH"}).Debug(d.Auth)
@@ -191,7 +197,7 @@ func BuildImage(d Docker, c *docker.Client) (err error) {
 	if err = c.BuildImage(docker.BuildImageOptions{
 		Name:                imageName,
 		ContextDir:          ".",
-		Dockerfile:          "Dockerfile",
+		Dockerfile:          dockerfile,
 		SuppressOutput:      false,
 		OutputStream:        os.Stdout,
 		RmTmpContainer:      true,

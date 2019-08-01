@@ -26,10 +26,13 @@
 - [ ] ! 自举
 - [ ] ! git 插件
     - [ ] git hook
-- [ ] ! docker 插件
+- [ ] !! docker 插件
     - [x] !! build
     - [x] !! push
-    - [x] pass auth from command line
+    - [x] ! pass auth from command line
+    - [ ] !! support multi tags for pushing
+    - [x] !! support specifying Dockerfile
+    
 - [ ] ! refactor code
 - [ ] !! caporal
     - [x] 创建容器
