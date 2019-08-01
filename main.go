@@ -11,7 +11,7 @@ var CWD string
 var RELEASE_VERSION []byte
 
 func init() {
-	RELEASE_VERSION = []byte(`0.1.4-beta`)
+	RELEASE_VERSION = []byte(`0.1.42-beta`)
 	CWD, _ = os.Getwd()
 	initLogLevel()
 }
