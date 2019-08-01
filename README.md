@@ -86,9 +86,8 @@ var "versions" {
 ### **homebrew**
 
 ```bash
-brew tap deoops-net/tap
+brew install deoops-net/tap/dotam
 
-brew install dotam
 ```
 
 ### **预编译二进制**
