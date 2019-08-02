@@ -45,6 +45,7 @@
     - [x] 更新容器
     - [x] 指定网络
     - [x] 指定volume
+    - [x] 鉴权分离
     - [ ] more opts support
     
 - [ ] !!三方插件支持

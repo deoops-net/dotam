@@ -183,6 +183,12 @@ docker {
       value = "bar"
     } 
   ]
+  // 如果是一个没有设置认证的内部registry可以用次参数
+  // notPrivate = true
+
+  // auth 参数有两个作用
+  // push 镜像时的认证
+  // 调度 caporal时的api认证
   auth {
     username = "_args.reg_user"
     password = "_args.reg_pass"

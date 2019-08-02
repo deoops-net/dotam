@@ -1,6 +1,10 @@
 package conf
 
-import docker "github.com/fsouza/go-dockerclient"
+import (
+	"reflect"
+
+	docker "github.com/fsouza/go-dockerclient"
+)
 
 type DotamConf struct {
 	Plugin  map[string]Plugin `json:"plugin" hcl:"plugin" yaml:"plugin"`
@@ -28,6 +32,7 @@ type Docker struct {
 	Dockerfile string     `json:"dockerfile,omitempty" hcl:"dockerfile,omitempty" yaml:"dockerfile,omitempty"`
 	BuildArgs  []BuildArg `json:"buildArgs,omitempty" hcl:"buildArgs,omitempty" yaml:"buildArgs,omitempty"`
 	Auth       Auth       `json:"auth" hcl:"auth" yaml:"auth"`
+	NotPrivate bool       `json:"notPrivate,omitempty" hcl:"notPrivate,omitempty" yaml:"notPrivate,omitempty"`
 	Caporal    Caporal    `json:"caporal" hcl:"caporal" yaml:"caporal"`
 }
 
@@ -83,4 +88,17 @@ func (d Docker) CreateBuildArgs() []docker.BuildArg {
 	}
 
 	return ba
+}
+
+func (d Docker) CreateAuthConfig() docker.AuthConfiguration {
+	auth := docker.AuthConfiguration{
+		//Username: "",
+		//Password: "",
+	}
+	if d.NotPrivate == true || reflect.DeepEqual(d.Auth, (Docker{}).Auth) {
+		auth.RegistryToken = " "
+		return auth
+	}
+
+	return auth
 }

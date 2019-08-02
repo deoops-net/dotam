@@ -60,6 +60,7 @@ func Render(src string, data pongo2.Context) (out string, err error) {
 }
 
 func VarToTplContext(vars map[string]conf.Var, args conf.CmdArgs) pongo2.Context {
+	log.WithFields(log.Fields{"BUILD": "VARS CMD VARS"}).Debug(vars, args)
 	c := pongo2.Context{}
 	c["_args"] = args
 	for k, v := range vars {
@@ -91,10 +92,8 @@ func RunTasks(cf conf.DotamConf) (err error) {
 	}
 
 	if err = ProcessDocker(cf.Docker); err != nil {
-		log.Error(err)
 		return
 	}
-
 	return
 }
 
@@ -142,7 +141,7 @@ func ProcessDocker(d conf.Docker) (err error) {
 		return
 	}
 
-	if d.Auth == (conf.Auth{}) {
+	if d.Auth == (conf.Auth{}) && d.NotPrivate != true {
 		return
 	}
 
@@ -214,14 +213,12 @@ func BuildImage(d conf.Docker, c *docker.Client) (err error) {
 // TODO
 func PushImage(d conf.Docker, c *docker.Client) (err error) {
 
+	log.WithFields(log.Fields{"IMAGE": "PUSH"}).Debug(d.CreateAuthConfig())
 	if err = c.PushImage(docker.PushImageOptions{
 		Name:         d.Repo,
 		Tag:          d.Tag,
 		OutputStream: os.Stdout,
-	}, docker.AuthConfiguration{
-		Username: d.Auth.Username,
-		Password: d.Auth.Password,
-	}); err != nil {
+	}, d.CreateAuthConfig()); err != nil {
 		return
 	}
 

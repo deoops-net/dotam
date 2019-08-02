@@ -66,9 +66,6 @@ func (r RunCmd) Run(args []string) (extCode int) {
 				dotamFile = defaultConf
 			}
 		}
-		// TODO store this build args
-		log.WithFields(log.Fields{"BUILD": "PARSED ARGS"}).Debug(buildArgs)
-
 	}
 
 	// read src dotamfile
@@ -76,20 +73,14 @@ func (r RunCmd) Run(args []string) (extCode int) {
 	if err = parseConf(&config, string(data), dotamFile); err != nil {
 		return
 	}
-	log.Debug(config)
 	// convert args into middle variables append to middle conf
 	// 1, convert cli args to map[string]interface
 	// 2, append args to pongo config
 	// 3, replace $variable to pongo mark {{}}
 	// 4, render them to middle
 	util.ArgsToMiddleTemp(&config, buildArgs)
-	log.WithFields(log.Fields{"BUILD": "CMD ARGS"}).Debug(config)
 
-	if config.Var != nil {
-		renderData = util.VarToTplContext(config.Var, config.CmdArgs)
-		//renderData = AppendToTplContext(config.CmdArgs)
-	}
-	log.WithFields(log.Fields{"BUILD": "CONF VARS"}).Debug(renderData)
+	renderData = util.VarToTplContext(config.Var, config.CmdArgs)
 
 	// after render middle remove this middle variables
 	// render middle conf

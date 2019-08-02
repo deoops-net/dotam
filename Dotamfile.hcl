@@ -26,6 +26,7 @@ temp "version.go" {
          username = "{{_args.reg_user}}"
          password = "{{_args.reg_pass}}"
      }
+
  }
 
 
