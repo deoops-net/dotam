@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -255,6 +256,7 @@ func ScheduleContainer(d conf.Docker, c *docker.Client) (err error) {
 
 	// do request for caporal
 	log.Debug(string(payload))
+	log.Debug("requesting caporal api: ", d.Caporal.Host+"/container")
 	req, err := http.NewRequest("PUT", d.Caporal.Host+"/container", bytes.NewBuffer(payload))
 	authCode := base64.StdEncoding.EncodeToString(Encrypt([]byte(d.Auth.Username+":"+d.Auth.Password), "caoral-salt"))
 	log.WithFields(log.Fields{"CAPORAL": "AUTH CODE"}).Debug(authCode)
@@ -273,6 +275,9 @@ func ScheduleContainer(d conf.Docker, c *docker.Client) (err error) {
 	log.Debug(string(body))
 
 	log.Debug(res.StatusCode)
+	if res.StatusCode != 200 {
+		return errors.New(string(body))
+	}
 
 	return
 }
