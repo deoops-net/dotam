@@ -1,6 +1,6 @@
 var "versions" {
     prod = "v0.1.1"
-    release = "v0.1.45-beta"
+    release = "v0.1.51-beta"
 }
 
 temp "version.go" {

@@ -91,13 +91,13 @@ func (d Docker) CreateBuildArgs() []docker.BuildArg {
 }
 
 func (d Docker) CreateAuthConfig() docker.AuthConfiguration {
-	auth := docker.AuthConfiguration{
-		//Username: "",
-		//Password: "",
-	}
+	auth := docker.AuthConfiguration{}
+	// insecure registry
 	if d.NotPrivate == true || reflect.DeepEqual(d.Auth, (Docker{}).Auth) {
 		auth.RegistryToken = " "
-		return auth
+	} else {
+		auth.Password = d.Auth.Password
+		auth.Username = d.Auth.Username
 	}
 
 	return auth

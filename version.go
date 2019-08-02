@@ -1,3 +1,3 @@
 package main
 
-var RELEASE_VERSION = "v0.1.45-beta"
+var RELEASE_VERSION = "v0.1.5-beta"
