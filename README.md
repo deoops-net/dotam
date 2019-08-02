@@ -1,34 +1,26 @@
-# Dotam
+
+
+<h1 align="center">
+  <p align="center">Dotam</p>
+<!--   <a href="https://docusaurus.io"><img src="https://docusaurus.io/img/slash-introducing.svg" alt="Docusaurus"></a> -->
+</h1>
+<p align="center">
+<a href="CONTRIBUTING.md#pull-requests"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+</p>
+
 
 [English Docs](./README.en.md)
 
-Dotam 读法 dot-am, 原意为dotfiles automation。
+Dotam 读法 dot-am, 原意为: dotfiles automation。
 
-<!-- TOC -->
+## 介绍
 
-- [Dotam](#dotam)
-    - [为什么创建另一个自动化工具](#为什么创建另一个自动化工具)
-    - [特性](#特性)
-    - [快览](#快览)
-    - [安装](#安装)
-        - [**homebrew**](#homebrew)
-        - [**预编译二进制**](#预编译二进制)
-        - [**通过go安装**](#通过go安装)
-        - [**Docker**](#docker)
-        - [**开发及源码安装**](#开发及源码安装)
-    - [使用](#使用)
-        - [运行](#运行)
-        - [初始化](#初始化)
-    - [文档](#文档)
-        - [Template 模块](#template-模块)
-        - [Docker模块](#docker模块)
-        - [Plugin](#plugin)
-        - [模板语法](#模板语法)
-    - [注意及常见问题](#注意及常见问题)
-        - [获取支持](#获取支持)
-        - [语法冲突](#语法冲突)
+dotam是一个主要面向开发者的工具，不同于流行CI/CD平台需要编写较复杂的流水线配置，dotam更适合**谁开发，谁运维**的思想。
 
-<!-- /TOC -->
+* **配置简单** 常用插件已经封装好，几行配置即可
+* **使用灵活** 相比较于在远端的CI服务，本地化pipeline更利于追踪、调试和调整。
+* **方便拓展** 极简的插件拓展方式，可以适应各类场景，兼容drone插件
+
 
 ## 为什么创建另一个自动化工具
 
