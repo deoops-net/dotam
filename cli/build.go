@@ -42,8 +42,10 @@ func (r RunCmd) Run(args []string) (extCode int) {
 		if err != nil {
 			log.Error(err)
 			extCode = -1
+			util.AppendFile("build status: failed", "Dotamfile.lock")
 			return
 		}
+		util.AppendFile("build status: success", "Dotamfile.lock")
 	}()
 
 	// read config
@@ -89,6 +91,10 @@ func (r RunCmd) Run(args []string) (extCode int) {
 		return -1
 	}
 	log.WithFields(log.Fields{"BUILD": "RENDERED DOC"}).Debug(newDotamSrc)
+
+	// create signature here and store in Dotamfile.lock
+	sign := "signed by dotam:\nchecksum: " + util.CreateHash(newDotamSrc) + "\n"
+	util.WriteFile(sign, util.Abs("Dotamfile.lock"))
 
 	newConfig := conf.DotamConf{}
 	if err = parseConf(&newConfig, newDotamSrc, dotamFile); err != nil {

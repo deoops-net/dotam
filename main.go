@@ -37,6 +37,7 @@ func initCli() {
 	c.Commands = map[string]cliTool.CommandFactory{
 		"build": cli.BuildCMDFactor,
 		"init":  cli.InitCMDFactor,
+		"git":   cli.GitCMDFactor,
 	}
 
 	exitStatus, err := c.Run()

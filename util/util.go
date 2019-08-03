@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"regexp"
 	"strings"
 
 	"github.com/techmesh/dotam/conf"
@@ -36,6 +37,21 @@ func ReadFile(file string) []byte {
 func WriteFile(data, file string) error {
 	err := ioutil.WriteFile(file, []byte(data), 0644)
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func AppendFile(data, file string) error {
+	path := Abs(file)
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	if _, err := f.Write([]byte(data)); err != nil {
+		return err
+	}
+	if err := f.Close(); err != nil {
 		return err
 	}
 	return nil
@@ -289,14 +305,14 @@ func ArgsToMiddleTemp(cf *conf.DotamConf, args []string) {
 	}
 }
 
-func createHash(key string) string {
+func CreateHash(key string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(key))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 func Encrypt(data []byte, passphrase string) []byte {
-	block, _ := aes.NewCipher([]byte(createHash(passphrase)))
+	block, _ := aes.NewCipher([]byte(CreateHash(passphrase)))
 	gcm, err := cipher.NewGCM(block)
 	if err != nil {
 		panic(err.Error())
@@ -310,7 +326,7 @@ func Encrypt(data []byte, passphrase string) []byte {
 }
 
 func Decrypt(data []byte, passphrase string) []byte {
-	key := []byte(createHash(passphrase))
+	key := []byte(CreateHash(passphrase))
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err.Error())
@@ -337,4 +353,10 @@ func encryptFile(filename string, data []byte, passphrase string) {
 func decryptFile(filename string, passphrase string) []byte {
 	data, _ := ioutil.ReadFile(filename)
 	return Decrypt(data, passphrase)
+}
+
+func ReplaceDigest(t, s string) string {
+	re := regexp.MustCompile(`(?m)signed by dotam:.*\n.*\n.*`)
+
+	return re.ReplaceAllLiteralString(t, s)
 }

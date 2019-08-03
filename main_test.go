@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"reflect"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -144,4 +145,22 @@ func TestPushImage(t *testing.T) {
 		t.Log(err)
 		t.Fail()
 	}
+}
+
+func TestReplaceDigest(t *testing.T) {
+	a := ` support logDriver flag
+    support git commit hook
+    support git --add-hook cli
+    
+    signed by dotam:
+    checksum: 3d8394dd4e1db5151011a707c884d6f9
+    build status: success
+	
+	some other tools generated
+`
+	b := `something new`
+
+	re := regexp.MustCompile(`(?m)signed by dotam:.*\n.*\n.*`)
+	newStr := re.ReplaceAllLiteralString(a, b)
+	t.Log(newStr)
 }
