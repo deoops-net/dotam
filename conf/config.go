@@ -31,9 +31,9 @@ type Docker struct {
 	Tag        string     `json:"tag" hcl:"tag" yaml:"tag"`
 	Dockerfile string     `json:"dockerfile,omitempty" hcl:"dockerfile,omitempty" yaml:"dockerfile,omitempty"`
 	BuildArgs  []BuildArg `json:"buildArgs,omitempty" hcl:"buildArgs,omitempty" yaml:"buildArgs,omitempty"`
-	Auth       Auth       `json:"auth" hcl:"auth" yaml:"auth"`
+	Auth       Auth       `json:"auth,omitempty" hcl:"auth,omitempty" yaml:"auth,omitempty"`
 	NotPrivate bool       `json:"notPrivate,omitempty" hcl:"notPrivate,omitempty" yaml:"notPrivate,omitempty"`
-	Caporal    Caporal    `json:"caporal" hcl:"caporal" yaml:"caporal"`
+	Caporal    Caporal    `json:"caporal,omitempty" hcl:"caporal,omitempty" yaml:"caporal,omitempty"`
 }
 
 // BuildArg the docker --build-args
@@ -51,9 +51,10 @@ type Caporal struct {
 
 // CaporalOptions are flags for docker run
 type CaporalOptions struct {
-	Publish []string    `json:"publish" hcl:"publish" yaml:"publish"`
-	Network string      `json:"network" hcl:"network" yaml:"network"`
-	Mount   []HostMount `json:"mount" hcl:"mount" yaml:"mount"`
+	Publish   []string         `json:"publish,omitempty" hcl:"publish,omitempty" yaml:"publish,omitempty"`
+	Network   string           `json:"network,omitempty" hcl:"network,omitempty" yaml:"network,omitempty"`
+	Mount     []HostMount      `json:"mount,omitempty" hcl:"mount,omitempty" yaml:"mount,omitempty"`
+	LogDriver docker.LogConfig `json:"logDriver,omitempty" hcl:"logDriver,omitempty" yaml:"logDriver,omitempty"`
 }
 type HostMount struct {
 	Bind string `json:"bind" hcl:"bind" yaml:"bind"`
