@@ -14,6 +14,7 @@
 **todos:**
 
 - [x] !! Temp插件
+    - [ ] \_args参数优先
 - [x] !! 多配置语言支持
     - [x] json
     - [x] yaml
@@ -25,7 +26,7 @@
         - [x] zh
 - [ ] ! 自举
 - [ ] ! git 插件
-    - [ ] git hook
+    - [x] git hook
 - [ ] !! docker 插件
     - [x] !! build
     - [x] !! push
